@@ -1,0 +1,6 @@
+{
+  "mujoco_loaded": true,
+  "nq": 36,
+  "nu": 15,
+  "nsensor": 18
+}

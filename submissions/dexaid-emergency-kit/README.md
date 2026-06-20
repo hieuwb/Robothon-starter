@@ -1,6 +1,6 @@
 # DexAid RescueHand: Tactile Five-Finger Emergency Kit Assembly
 
-A MuJoCo embodied-AI challenge entry targeting top rubric coverage across dexterous manipulation, long-horizon tasks, scenario design, data collection, actuator-level rollout, reproducible metrics, and a clear rescue/medical story.
+A MuJoCo embodied-AI challenge entry targeting top rubric coverage with real MuJoCo physics stepping across dexterous manipulation, long-horizon tasks, scenario design, data collection, actuator-level rollout, reproducible metrics, and a clear rescue/medical story.
 
 ## Task
 A 5-finger dexterous hand mounted on a 3-axis arm autonomously assembles an emergency medication kit:
@@ -21,6 +21,21 @@ A 5-finger dexterous hand mounted on a 3-axis arm autonomously assembles an emer
 - **Dexterity:** five-finger grasp + cap rotation + disturbance hold.
 - **Engineering:** modular Python package, metrics JSON, documented entrypoint.
 - **Presentation:** generates `outputs/demo.mp4` and `outputs/poster.png` with overlayed metrics.
+
+## Real MuJoCo physics execution (v2 upgrade)
+
+The controller now drives all 15 actuators through a real MuJoCo stepped waypoint
+sequence: PD interpolation + physics stepping at 0.002s timestep. Task phases
+(approach, grasp, lift, twist cap, move to kit, release) are executed against the
+MJCF scene with contacts, sensors, and energy tracking.
+
+```bash
+python demo.py             # single execution + video + metrics
+python simulate_mujoco.py  # rollout with trajectory JSON export
+python data_collection.py  # batch trial dataset
+```
+
+Outputs go to `outputs/`.
 
 ## Quick start
 ```bash
