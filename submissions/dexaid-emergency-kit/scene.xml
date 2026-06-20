@@ -1,6 +1,6 @@
 <mujoco model="dexterous_emergency_kit_lab">
   <compiler angle="degree" meshdir="assets"/>
-  <option timestep="0.002" gravity="0 0 -9.81" iterations="40"/>
+  <option timestep="0.002" integrator="RK4" gravity="0 0 -9.81" iterations="100"/>
   <visual><global offwidth="1280" offheight="720"/></visual>
   <default><joint damping="1.0" armature="0.02"/><geom friction="1.2 0.08 0.02" solref="0.01 1" solimp="0.9 0.95 0.001"/></default>
   <worldbody>
