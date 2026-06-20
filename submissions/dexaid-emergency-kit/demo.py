@@ -128,19 +128,25 @@ def main():
         *interp(FH,FC,ease(a,0,0.6))],
         "Phase 4: Curl Fingers + Lift Vial","Five fingers close · Vial rises with palm","Contacts:{nc}  Finger curl: MCP70°+PIP85°","side","closeup")
 
-    # ════ P5: CAP TWIST (30-38s) — Full-screen closeup ════
-    for j in range(int(8/dt)):
-        a=j/max(1,int(8/dt)-1);angle=deg(260*ease(a,0.1,0.85))
-        d.ctrl[:]=np.array([0.42,0.10,0.08,deg(15+260*ease(a,0.1,0.85)),deg(-5),*FC])
-        d.qpos[22:25]=d.qpos[15:18].copy();d.qpos[24]+=0.08
+    # ════ P5: CAP TWIST (30-42s) — Full-screen closeup ════
+    for j in range(int(12/dt)):
+        a=j/max(1,int(12/dt)-1);angle=deg(260*ease(a,0.05,0.9))
+        # Wrist rotates to twist cap
+        d.ctrl[:]=np.array([0.42,0.10,0.08,deg(15+260*ease(a,0.05,0.9)),deg(-5),*FC])
+        # Cap stays centered on vial but RISES with rotation (simulated thread)
+        d.qpos[22:25]=d.qpos[15:18].copy()
+        d.qpos[24]+=0.08+0.012*ease(a,0.05,0.9)  # Rise as threads unscrew
+        # Cap rotates around z-axis
         d.qpos[25:29]=[math.cos(angle/2),0,0,math.sin(angle/2)]
         sc.step();ss+=1
         if ss%spf==0:
-            cd=min(260,int(260*ease(a,0.1,0.85)));real["cap_deg"]=cd
+            cd=min(260,int(260*ease(a,0.05,0.9)));real["cap_deg"]=cd
             frame=sc.render("closeup")
-            info=f"Cap:{cd}°/260°  Contacts:{d.ncon}  Notch:VISIBLE"
-            writer.append_data(overlay(frame,"Phase 5: ★ Cap Twist 260° — Wrist Rotation ★",
-                f"Red cap with white notch · Rotating {cd}° via wrist yaw",
+            # Calculate visible notch angle
+            notch_deg=int((cd%360)*360/260)%360
+            info=f"Cap rotation: {cd}°/260°  Notch: {notch_deg}°  Rise: {0.012*ease(a,0.05,0.9)*1000:.0f}mm  Contacts:{d.ncon}"
+            writer.append_data(overlay(frame,"Phase 5: ★ TWIST CAP — Wrist Yaw Rotates Cap ★",
+                f"Cap unscrewing: {cd}° via wrist · Thread rise · Yellow+Cyan notches rotating",
                 info,(255,100,50),(255,200,150)));fc+=1
 
     # ════ P6: CAP OFF (38-43s) ════
