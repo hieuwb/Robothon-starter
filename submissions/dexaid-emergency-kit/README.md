@@ -1,6 +1,6 @@
-# Autonomous Dexterous Emergency Kit Assembly Lab
+# DexAid RescueHand: Tactile Five-Finger Emergency Kit Assembly
 
-A MuJoCo embodied-AI challenge entry targeting high rubric coverage: dexterous manipulation, deep MJCF use, autonomous task planning, reproducible metrics, and a clear rescue/medical story.
+A MuJoCo embodied-AI challenge entry targeting top rubric coverage across dexterous manipulation, long-horizon tasks, scenario design, data collection, actuator-level rollout, reproducible metrics, and a clear rescue/medical story.
 
 ## Task
 A 5-finger dexterous hand mounted on a 3-axis arm autonomously assembles an emergency medication kit:
@@ -83,3 +83,8 @@ The included deterministic evaluation surrogate runs 20 trials and reports repro
 ## Judge-facing notes
 
 See `JUDGING_NOTES.md` for rubric alignment, transparent limitations, and scoring highlights.
+
+
+## Technical report
+
+See `TECHNICAL_REPORT.md` for the upgraded judge-facing explanation of MuJoCo depth, control, data collection, limitations, and rubric alignment.

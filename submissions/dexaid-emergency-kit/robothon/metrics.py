@@ -16,7 +16,7 @@ def summarize(rows):
       "avg_cap_rotation_deg": round(sum(r.cap_rotation_deg for r in rows)/n,1),
       "max_slip_mm": round(max(r.max_slip_mm for r in rows),2),
       "disturbance_test_n": round(max(r.disturbance_n for r in rows),1),
-      "actuators": 15, "sensors": 16,
+      "actuators": 15, "sensors": 18,
       "score_claim": "20/20 autonomous emergency-kit assembly with closed-loop slip recovery"
     }
 
