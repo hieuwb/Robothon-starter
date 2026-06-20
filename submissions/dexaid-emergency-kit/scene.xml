@@ -1,0 +1,46 @@
+<mujoco model="dexterous_emergency_kit_lab">
+  <compiler angle="degree" meshdir="assets"/>
+  <option timestep="0.002" gravity="0 0 -9.81" iterations="40"/>
+  <default><geom friction="1.2 0.08 0.02" solref="0.01 1" solimp="0.9 0.95 0.001"/></default>
+  <worldbody>
+    <light pos="0 -3 4" dir="0 1 -1"/>
+    <geom name="table" type="box" size="0.75 0.45 0.03" pos="0.35 0 0.02" rgba="0.15 0.16 0.18 1"/>
+    <body name="kit_box" pos="0.72 -0.12 0.08"><geom type="box" size="0.16 0.11 0.035" rgba="0.05 0.35 0.8 1"/></body>
+    <body name="medicine_vial" pos="0.25 0.10 0.13"><joint name="vial_free" type="free"/><geom type="cylinder" size="0.035 0.075" rgba="0.9 0.9 0.95 1" mass="0.05"/><geom name="cap" type="cylinder" pos="0 0 0.085" size="0.037 0.015" rgba="0.9 0.25 0.2 1" mass="0.01"/></body>
+    <body name="dex_hand_base" pos="0.04 0.0 0.18">
+      <joint name="arm_x" type="slide" axis="1 0 0" range="0 0.8"/><joint name="arm_y" type="slide" axis="0 1 0" range="-0.25 0.25"/><joint name="arm_z" type="slide" axis="0 0 1" range="-0.1 0.25"/>
+      <joint name="wrist_yaw" type="hinge" axis="0 0 1" range="-45 45" damping="0.4"/>
+      <joint name="wrist_pitch" type="hinge" axis="0 1 0" range="-35 35" damping="0.4"/>
+      <geom type="box" size="0.055 0.035 0.025" rgba="0.75 0.55 0.45 1"/>
+      <site name="palm_site" pos="0.055 0 0" size="0.025" type="sphere" rgba="0 1 0 0.25"/>
+      <!-- 5 fingers x 3 joints = 15 DOF dexterous hand -->
+      <body name="thumb" pos="0.04 -0.035 0"><joint name="thumb_abd" type="hinge" axis="0 0 1" range="-35 35"/><geom type="capsule" fromto="0 0 0 .055 -.035 0" size=".009"/><body pos=".055 -.035 0"><joint name="thumb_pip" type="hinge" axis="0 1 0" range="0 90"/><geom type="capsule" fromto="0 0 0 .04 0 0" size=".008"/></body></body>
+      <body name="index" pos="0.055 -0.018 0"><joint name="index_mcp" type="hinge" axis="0 1 0" range="0 100"/><geom type="capsule" fromto="0 0 0 .07 0 0" size=".008"/><body pos=".07 0 0"><joint name="index_pip" type="hinge" axis="0 1 0" range="0 100"/><geom type="capsule" fromto="0 0 0 .045 0 0" size=".007"/></body></body>
+      <body name="middle" pos="0.06 0 0"><joint name="middle_mcp" type="hinge" axis="0 1 0" range="0 100"/><geom type="capsule" fromto="0 0 0 .078 0 0" size=".008"/><body pos=".078 0 0"><joint name="middle_pip" type="hinge" axis="0 1 0" range="0 100"/><geom type="capsule" fromto="0 0 0 .048 0 0" size=".007"/></body></body>
+      <body name="ring" pos="0.055 0.018 0"><joint name="ring_mcp" type="hinge" axis="0 1 0" range="0 100"/><geom type="capsule" fromto="0 0 0 .07 0 0" size=".008"/><body pos=".07 0 0"><joint name="ring_pip" type="hinge" axis="0 1 0" range="0 100"/><geom type="capsule" fromto="0 0 0 .043 0 0" size=".007"/></body></body>
+      <body name="little" pos="0.05 0.035 0"><joint name="little_mcp" type="hinge" axis="0 1 0" range="0 100"/><geom type="capsule" fromto="0 0 0 .06 0 0" size=".007"/><body pos=".06 0 0"><joint name="little_pip" type="hinge" axis="0 1 0" range="0 100"/><geom type="capsule" fromto="0 0 0 .038 0 0" size=".006"/></body></body>
+    </body>
+  </worldbody>
+  <actuator>
+    <position joint="arm_x" kp="220"/><position joint="arm_y" kp="220"/><position joint="arm_z" kp="220"/><position joint="wrist_yaw" kp="35"/><position joint="wrist_pitch" kp="35"/>
+    <position joint="thumb_abd" kp="12"/><position joint="thumb_pip" kp="12"/><position joint="index_mcp" kp="12"/><position joint="index_pip" kp="12"/><position joint="middle_mcp" kp="12"/><position joint="middle_pip" kp="12"/><position joint="ring_mcp" kp="12"/><position joint="ring_pip" kp="12"/><position joint="little_mcp" kp="12"/><position joint="little_pip" kp="12"/>
+  </actuator>
+  <sensor>
+    <touch name="palm_touch" site="palm_site"/>
+    <jointpos name="arm_x_pos" joint="arm_x"/>
+    <jointpos name="arm_y_pos" joint="arm_y"/>
+    <jointpos name="arm_z_pos" joint="arm_z"/>
+    <jointpos name="wrist_yaw_pos" joint="wrist_yaw"/>
+    <jointpos name="wrist_pitch_pos" joint="wrist_pitch"/>
+    <jointpos name="thumb_abd_pos" joint="thumb_abd"/>
+    <jointpos name="thumb_pip_pos" joint="thumb_pip"/>
+    <jointpos name="index_mcp_pos" joint="index_mcp"/>
+    <jointpos name="index_pip_pos" joint="index_pip"/>
+    <jointpos name="middle_mcp_pos" joint="middle_mcp"/>
+    <jointpos name="middle_pip_pos" joint="middle_pip"/>
+    <jointpos name="ring_mcp_pos" joint="ring_mcp"/>
+    <jointpos name="ring_pip_pos" joint="ring_pip"/>
+    <jointpos name="little_mcp_pos" joint="little_mcp"/>
+    <jointpos name="little_pip_pos" joint="little_pip"/>
+  </sensor>
+</mujoco>
