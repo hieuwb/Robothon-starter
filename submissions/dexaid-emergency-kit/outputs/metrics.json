@@ -8,5 +8,5 @@
   "acts": 15,
   "sens": 19,
   "dof": 51,
-  "phases": 12
+  "cameras": 4
 }

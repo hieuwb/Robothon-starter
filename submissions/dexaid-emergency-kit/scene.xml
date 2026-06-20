@@ -9,19 +9,25 @@
   <worldbody>
     <light pos="0 -3 4" dir="0 1 -1"/>
 
+    <!-- Multi-angle cameras -->
+    <camera name="overhead" pos="0.35 0 3.5" xyaxes="1 0 0 0 1 0"/>
+    <camera name="side" pos="0.35 -2.5 0.8" xyaxes="1 0 0 0 0 1"/>
+    <camera name="closeup" pos="0.25 0.6 0.5" xyaxes="1 0 0 0 0 1"/>
+    <camera name="kit_view" pos="0.72 -0.8 0.6" xyaxes="-1 0 0 0 0 1"/>
+
     <!-- Table -->
     <geom name="table" type="box" size="0.75 0.45 0.03" pos="0.35 0 0.02" rgba="0.12 0.14 0.16 1"/>
 
-    <!-- Pill tray (visual only, pills are free bodies) -->
+    <!-- Pill tray (visual) -->
     <geom name="pill_tray" type="box" size="0.15 0.12 0.015" pos="0.15 -0.15 0.075" rgba="0.6 0.6 0.65 1"/>
 
-    <!-- Red Pill - free body -->
-    <body name="pill_red" pos="0.18 -0.15 0.105">
+    <!-- Red Pill -->
+    <body name="pill_red" pos="0.18 -0.15 0.11">
       <joint name="pill_red_f" type="free" damping="0.2"/>
       <geom type="sphere" size="0.016" rgba="1 0.2 0.2 1" mass="0.003"/>
     </body>
-    <!-- Blue Pill - free body -->
-    <body name="pill_blue" pos="0.12 -0.15 0.105">
+    <!-- Blue Pill -->
+    <body name="pill_blue" pos="0.12 -0.15 0.11">
       <joint name="pill_blue_f" type="free" damping="0.2"/>
       <geom type="sphere" size="0.016" rgba="0.2 0.4 1 1" mass="0.003"/>
     </body>
@@ -47,10 +53,16 @@
       <site name="vial_grasp_site" pos="0 0 0.03" size="0.025" type="sphere" rgba="0 1 0 0.2"/>
     </body>
 
-    <!-- Cap as SEPARATE free body on top of vial -->
+    <!-- Cap with VISIBLE MARKINGS -->
     <body name="medicine_cap" pos="0.25 0.10 0.21">
       <joint name="cap_free" type="free" damping="0.3"/>
-      <geom name="cap_geom" type="cylinder" size="0.037 0.015" rgba="0.9 0.25 0.2 1" mass="0.003" friction="10 5 0.5" solimp="0.99 0.99 0.001" solref="0.005 1"/>
+      <!-- Cap body -->
+      <geom name="cap_geom" type="cylinder" size="0.037 0.015" rgba="0.9 0.25 0.2 1" mass="0.003" friction="10 5 0.5"/>
+      <!-- Cap ridges (visible rotation markers) -->
+      <geom type="box" size="0.037 0.004 0.016" pos="0 0 0" rgba="0.75 0.15 0.1 1"/>
+      <geom type="box" size="0.004 0.037 0.016" pos="0 0 0" rgba="0.75 0.15 0.1 1"/>
+      <!-- Asymmetric notch marker -->
+      <geom name="cap_notch" type="box" size="0.008 0.005 0.018" pos="0.032 -0.025 0" rgba="1 1 1 0.9"/>
       <site name="cap_grasp_site" pos="0 0 0" size="0.02" type="sphere" rgba="1 0 0 0.3"/>
     </body>
 
