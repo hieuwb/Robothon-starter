@@ -1,14 +1,19 @@
 {
   "success": true,
-  "frames": 800,
+  "frames": 1100,
   "fps": 10,
-  "duration_s": 80.0,
-  "video_length": "1m20s",
+  "duration_s": 110.0,
+  "video_length": "1m50s",
   "rendering": "MuJoCo GLFW/Xvfb",
-  "resolution": "960x540",
-  "grasp_type": "cylindrical 5-finger (thumb opposes fingers)",
-  "vial_lifted": true,
-  "vial_transported": true,
+  "approach": "original concept \u2014 visual demo with MuJoCo rendering",
+  "features": [
+    "wrist_rotation",
+    "five_finger_grasp",
+    "vial_transport",
+    "web_teleop",
+    "keyboard_teleop",
+    "data_collection"
+  ],
   "actuators": 15,
   "sensors": 18,
   "nq": 36
