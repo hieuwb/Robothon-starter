@@ -1,0 +1,9 @@
+{
+  "mode": "web_teleop_recorded_demo",
+  "frames": 435,
+  "fps": 15,
+  "duration_s": 29.0,
+  "avg_contacts": 8.3,
+  "web_url": "http://46.224.44.243:8095",
+  "description": "Recorded web teleop session showing 5-finger emergency kit assembly"
+}
