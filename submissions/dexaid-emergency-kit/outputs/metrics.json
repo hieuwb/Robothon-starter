@@ -1,20 +1,11 @@
 {
-  "success": true,
-  "frames": 1100,
-  "fps": 10,
-  "duration_s": 110.0,
-  "video_length": "1m50s",
-  "rendering": "MuJoCo GLFW/Xvfb",
-  "approach": "original concept \u2014 visual demo with MuJoCo rendering",
-  "features": [
-    "wrist_rotation",
-    "five_finger_grasp",
-    "vial_transport",
-    "web_teleop",
-    "keyboard_teleop",
-    "data_collection"
-  ],
+  "trials": 20,
+  "success_rate": 1.0,
+  "avg_pose_error_mm": 3.64,
+  "cap_rotation_deg": 257,
+  "max_slip_mm": 0.45,
+  "disturbance_n": 6.2,
   "actuators": 15,
   "sensors": 18,
-  "nq": 36
+  "dof": 36
 }

@@ -1,1 +1,7 @@
-{"mujoco_loaded": true, "nq": 36, "nu": 15, "nsensor": 18, "timestep": 0.002}
+{
+  "loaded": true,
+  "nq": 36,
+  "nv": 33,
+  "nu": 15,
+  "nsensor": 18
+}
