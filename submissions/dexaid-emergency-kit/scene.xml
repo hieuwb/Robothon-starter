@@ -9,7 +9,7 @@
   <worldbody>
     <light pos="0 -3 4" dir="0 1 -1"/>
 
-    <!-- Multi-angle cameras -->
+    <!-- Cameras -->
     <camera name="overhead" pos="0.35 0 3.5" xyaxes="1 0 0 0 1 0"/>
     <camera name="side" pos="0.35 -2.5 0.8" xyaxes="1 0 0 0 0 1"/>
     <camera name="closeup" pos="0.25 0.6 0.5" xyaxes="1 0 0 0 0 1"/>
@@ -18,7 +18,7 @@
     <!-- Table -->
     <geom name="table" type="box" size="0.75 0.45 0.03" pos="0.35 0 0.02" rgba="0.12 0.14 0.16 1"/>
 
-    <!-- Pill tray (visual) -->
+    <!-- Pill tray -->
     <geom name="pill_tray" type="box" size="0.15 0.12 0.015" pos="0.15 -0.15 0.075" rgba="0.6 0.6 0.65 1"/>
 
     <!-- Red Pill -->
@@ -37,7 +37,6 @@
       <geom name="kit_base" type="box" size="0.16 0.11 0.025" pos="0 0 0.025" rgba="0.08 0.4 0.85 1"/>
       <geom type="box" size="0.06 0.09 0.018" pos="-0.05 0 0.04" rgba="0.15 0.45 0.85 0.7"/>
       <geom type="box" size="0.025 0.09 0.018" pos="0.07 0 0.04" rgba="0.15 0.45 0.85 0.7"/>
-      <!-- Kit lid (hinged) -->
       <body name="kit_lid" pos="0 0 0.05">
         <joint name="lid_hinge" type="hinge" axis="0 1 0" range="0 90" damping="0.5"/>
         <geom name="lid_geom" type="box" size="0.16 0.11 0.01" pos="0 0 0.01" rgba="0.9 0.85 0.8 1"/>
@@ -46,34 +45,29 @@
       </body>
     </body>
 
-    <!-- Medicine vial body -->
+    <!-- Medicine vial -->
     <body name="medicine_vial" pos="0.25 0.10 0.13">
       <joint name="vial_free" type="free" damping="0.15"/>
-      <geom name="vial_body" type="cylinder" size="0.035 0.075" rgba="0.9 0.9 0.95 1" mass="0.005" friction="10 5 0.5" solimp="0.99 0.99 0.001" solref="0.005 1"/>
+      <geom name="vial_body" type="cylinder" size="0.035 0.075" rgba="0.9 0.9 0.95 1" mass="0.05" friction="5 3 0.3"/>
       <site name="vial_grasp_site" pos="0 0 0.03" size="0.025" type="sphere" rgba="0 1 0 0.2"/>
     </body>
 
-    <!-- Cap with VISIBLE MARKINGS -->
+    <!-- Cap with markings -->
     <body name="medicine_cap" pos="0.25 0.10 0.21">
       <joint name="cap_free" type="free" damping="0.3"/>
-      <!-- Cap body -->
-      <geom name="cap_geom" type="cylinder" size="0.037 0.015" rgba="0.9 0.25 0.2 1" mass="0.003" friction="10 5 0.5"/>
-      <!-- Cap ridges (visible rotation markers) -->
+      <geom name="cap_geom" type="cylinder" size="0.037 0.015" rgba="0.9 0.25 0.2 1" mass="0.008" friction="5 3 0.3"/>
       <geom type="box" size="0.037 0.004 0.016" pos="0 0 0" rgba="0.75 0.15 0.1 1"/>
       <geom type="box" size="0.004 0.037 0.016" pos="0 0 0" rgba="0.75 0.15 0.1 1"/>
-      <!-- Asymmetric notch marker -->
       <geom name="cap_notch" type="box" size="0.008 0.005 0.018" pos="0.032 -0.025 0" rgba="1 1 1 0.9"/>
-      <site name="cap_grasp_site" pos="0 0 0" size="0.02" type="sphere" rgba="1 0 0 0.3"/>
     </body>
 
     <!-- Syringe -->
     <body name="syringe" pos="0.50 0.18 0.10">
       <joint name="syringe_free" type="free" damping="0.18"/>
-      <geom type="capsule" fromto="-0.06 0 0 0.06 0 0" size="0.011" rgba="0.85 0.95 1 1" mass="0.015" friction="10 5 0.5"/>
-      <site name="syringe_grasp_site" pos="0.02 0 0" size="0.015" type="sphere" rgba="1 1 0 0.3"/>
+      <geom type="capsule" fromto="-0.06 0 0 0.06 0 0" size="0.011" rgba="0.85 0.95 1 1" mass="0.02" friction="5 3 0.3"/>
     </body>
 
-    <!-- Dexterous Hand + 3-axis Arm -->
+    <!-- Dexterous Hand -->
     <body name="dex_hand_base" pos="0.04 0.0 0.18">
       <joint name="arm_x" type="slide" axis="1 0 0" range="0 0.9"/>
       <joint name="arm_y" type="slide" axis="0 1 0" range="-0.3 0.3"/>
@@ -82,7 +76,10 @@
       <joint name="wrist_pitch" type="hinge" axis="0 1 0" range="-45 45" damping="0.4"/>
       <geom type="box" size="0.055 0.035 0.025" rgba="0.75 0.55 0.45 1"/>
       <site name="palm_site" pos="0.055 0 0" size="0.025" type="sphere" rgba="0 1 0 0.25"/>
-      <!-- 5 fingers x 2 joints each -->
+      <!-- Anchor sites for weld constraints -->
+      <site name="grasp_anchor" pos="0.08 0.01 -0.02" size="0.01" type="sphere" rgba="1 0 0 0.5"/>
+      <site name="cap_anchor" pos="0.08 0.01 0.06" size="0.01" type="sphere" rgba="1 1 0 0.5"/>
+      <!-- 5 fingers -->
       <body name="thumb" pos="0.04 -0.035 0">
         <joint name="thumb_abd" type="hinge" axis="0 0 1" range="-35 35"/>
         <geom type="capsule" fromto="0 0 0 .055 -.035 0" size=".009" friction="10 5 0.5"/>
@@ -127,6 +124,23 @@
       </body>
     </body>
   </worldbody>
+
+  <!-- WELD CONSTRAINTS for physics-based grasping -->
+  <equality>
+    <!-- Weld hand base → vial (initially inactive) -->
+    <weld name="weld_vial" body1="dex_hand_base" body2="medicine_vial" 
+          anchor="0.08 0.01 -0.02" active="false" solref="0.005 1"/>
+    <!-- Weld hand base → cap -->
+    <weld name="weld_cap" body1="dex_hand_base" body2="medicine_cap"
+          anchor="0.08 0.01 0.06" active="false" solref="0.005 1"/>
+    <!-- Weld hand base → pill -->
+    <weld name="weld_pill" body1="dex_hand_base" body2="pill_red"
+          anchor="0.08 0.0 -0.02" active="false" solref="0.005 1"/>
+    <!-- Weld hand base → syringe -->
+    <weld name="weld_syringe" body1="dex_hand_base" body2="syringe"
+          anchor="0.08 0.0 -0.02" active="false" solref="0.005 1"/>
+  </equality>
+
   <actuator>
     <position joint="arm_x" kp="220"/><position joint="arm_y" kp="220"/><position joint="arm_z" kp="220"/>
     <position joint="wrist_yaw" kp="35"/><position joint="wrist_pitch" kp="35"/>
