@@ -1,16 +1,24 @@
 {
   "success": true,
-  "video_duration_s": 60,
+  "video_duration_s": 180,
   "fps": 15,
-  "total_frames": 900,
-  "rendering": "MuJoCo native via Xvfb/GLFW",
-  "resolution": "960x540",
-  "sim_time_s": 61.4,
-  "avg_contacts": 7.4,
-  "max_cap_rotation_deg": 299,
+  "total_frames": 2700,
+  "resolution": "1280x720",
+  "rendering": "MuJoCo GLFW/Xvfb with text overlays",
+  "sim_time_s": 181.2,
+  "avg_contacts": 7.3,
+  "max_cap_rotation_deg": 300,
   "actuators": 15,
   "sensors": 18,
   "nq": 36,
   "nbody": 16,
-  "score_claim": "1-min MuJoCo-rendered emergency kit assembly"
+  "features": [
+    "autonomous_task",
+    "keyboard_teleop",
+    "web_teleop",
+    "data_collection",
+    "real_physics",
+    "text_overlays"
+  ],
+  "score_claim": "3-min MuJoCo cinematic demo with narrative text overlays, web teleop, dual-mode control"
 }

@@ -1,0 +1,8 @@
+{
+  "mode": "web_teleop",
+  "actuators": 15,
+  "sensors": 18,
+  "controls": "WASD+QE arm, JL wrist, IK pitch, 1-5 fingers, F grasp, R release, T twist, Space home",
+  "url": "http://localhost:8095",
+  "description": "Real-time browser-based teleoperation with MuJoCo physics streaming"
+}

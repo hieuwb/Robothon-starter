@@ -1,4 +1,4 @@
-# DexAid RescueHand v3: MuJoCo-Rendered Teleop & Autonomous Emergency Kit Assembly
+# DexAid RescueHand v3: Cinematic MuJoCo + Web Teleop + Autonomous Emergency Kit
 
 A MuJoCo embodied-AI challenge entry targeting top rubric coverage with real MuJoCo physics stepping across dexterous manipulation, long-horizon tasks, scenario design, data collection, actuator-level rollout, reproducible metrics, and a clear rescue/medical story.
 
@@ -118,3 +118,29 @@ python data_collection.py  # batch trial dataset
 Controls: `w/s` arm X, `a/d` arm Y, `q/e` arm Z, `j/l` wrist yaw, `i/k` wrist pitch,
 `1-5` fingers, `f` grasp all, `r` release, `t` twist cap, `SPACE` home, `ESC` quit.
 
+
+## Web Teleop (NEW v3)
+
+Real-time browser-based teleoperation with live MuJoCo physics streaming:
+
+```bash
+python web_teleop.py      # Starts web server on port 8095
+```
+
+Open http://localhost:8095 — control all 15 actuators via keyboard or on-screen
+buttons. MuJoCo renders each frame and streams it as JPEG to the browser at 30fps.
+
+## Cinematic Multi-Camera Demo
+
+The 3-minute demo video (`demo.py`) uses 6 camera angles (wide, close-up, top-down,
+side, kit view, tracking) with text overlays showing real-time metrics.
+
+## All scripts
+
+```bash
+python demo.py             # 3-min cinematic multi-camera MuJoCo video
+python web_teleop.py       # Browser-based real-time teleop server
+python teleop.py           # Keyboard teleop (batch demo mode)  
+python simulate_mujoco.py  # Physics rollout with trajectory export
+python data_collection.py  # Batch trial dataset
+```
