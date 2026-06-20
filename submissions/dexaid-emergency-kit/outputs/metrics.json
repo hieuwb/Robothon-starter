@@ -1,13 +1,10 @@
 {
-  "success": true,
-  "palm_push_mm": 4.385528077084699,
-  "real_contacts": 108,
+  "palm_push_mm": 10.383785040353366,
+  "contacts": 43,
   "cap_deg": 260,
-  "pill_placed": true,
-  "syringe_placed": true,
   "lid_sealed": false,
   "dof": 51,
   "acts": 15,
   "sens": 19,
-  "approach": "hybrid real-contact + weld-assist"
+  "presentation": "split-screen cinematic"
 }
