@@ -1,0 +1,196 @@
+{
+  "summary": {
+    "trials": 20,
+    "success_rate": 1.0,
+    "avg_pose_error_mm": 3.64,
+    "max_pose_error_mm": 4.47,
+    "avg_cap_rotation_deg": 257.0,
+    "max_slip_mm": 0.45,
+    "disturbance_test_n": 6.2,
+    "actuators": 15,
+    "sensors": 16,
+    "score_claim": "20/20 autonomous emergency-kit assembly with closed-loop slip recovery"
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "success": true,
+      "pose_error_mm": 4.076229818846062,
+      "cap_rotation_deg": 256.2837451065537,
+      "max_slip_mm": 0.37433153000808456,
+      "disturbance_n": 6.204000822708986,
+      "steps": 1746
+    },
+    {
+      "trial": 2,
+      "success": true,
+      "pose_error_mm": 4.471272910325205,
+      "cap_rotation_deg": 258.9156185191677,
+      "max_slip_mm": 0.1970201824963264,
+      "disturbance_n": 5.588860938673636,
+      "steps": 1866
+    },
+    {
+      "trial": 3,
+      "success": true,
+      "pose_error_mm": 2.7491844252692266,
+      "cap_rotation_deg": 262.4347677512594,
+      "max_slip_mm": 0.27166273285902964,
+      "disturbance_n": 6.0514363414220655,
+      "steps": 1870
+    },
+    {
+      "trial": 4,
+      "success": true,
+      "pose_error_mm": 3.563467593724815,
+      "cap_rotation_deg": 245.93736799551306,
+      "max_slip_mm": 0.3120617079549231,
+      "disturbance_n": 5.40213629859288,
+      "steps": 1745
+    },
+    {
+      "trial": 5,
+      "success": true,
+      "pose_error_mm": 2.6401115451256194,
+      "cap_rotation_deg": 260.44427361910704,
+      "max_slip_mm": 0.35570033860161104,
+      "disturbance_n": 5.951144519745755,
+      "steps": 1773
+    },
+    {
+      "trial": 6,
+      "success": true,
+      "pose_error_mm": 3.194001020041345,
+      "cap_rotation_deg": 267.97382037567803,
+      "max_slip_mm": 0.35450348417510075,
+      "disturbance_n": 5.499290474706815,
+      "steps": 1816
+    },
+    {
+      "trial": 7,
+      "success": true,
+      "pose_error_mm": 4.260318456149645,
+      "cap_rotation_deg": 245.83167762573575,
+      "max_slip_mm": 0.30979247848421543,
+      "disturbance_n": 5.476552400928221,
+      "steps": 1862
+    },
+    {
+      "trial": 8,
+      "success": true,
+      "pose_error_mm": 3.1599398329610606,
+      "cap_rotation_deg": 247.3813205140486,
+      "max_slip_mm": 0.29439244331646397,
+      "disturbance_n": 5.902713060271485,
+      "steps": 1867
+    },
+    {
+      "trial": 9,
+      "success": true,
+      "pose_error_mm": 3.213386116456957,
+      "cap_rotation_deg": 252.85227042976777,
+      "max_slip_mm": 0.4546856497297616,
+      "disturbance_n": 5.64550153159428,
+      "steps": 1743
+    },
+    {
+      "trial": 10,
+      "success": true,
+      "pose_error_mm": 3.0126150682069412,
+      "cap_rotation_deg": 255.96292201290584,
+      "max_slip_mm": 0.37308599272214144,
+      "disturbance_n": 5.163027121094023,
+      "steps": 1849
+    },
+    {
+      "trial": 11,
+      "success": true,
+      "pose_error_mm": 3.958016115274663,
+      "cap_rotation_deg": 265.0104029460604,
+      "max_slip_mm": 0.1580546045315929,
+      "disturbance_n": 5.557407783593659,
+      "steps": 1854
+    },
+    {
+      "trial": 12,
+      "success": true,
+      "pose_error_mm": 3.5688400651671235,
+      "cap_rotation_deg": 266.2295948831314,
+      "max_slip_mm": 0.39337396842505507,
+      "disturbance_n": 5.6708659523586125,
+      "steps": 1852
+    },
+    {
+      "trial": 13,
+      "success": true,
+      "pose_error_mm": 3.8446312799909084,
+      "cap_rotation_deg": 262.3798317543862,
+      "max_slip_mm": 0.21150150855308555,
+      "disturbance_n": 6.145385079595766,
+      "steps": 1853
+    },
+    {
+      "trial": 14,
+      "success": true,
+      "pose_error_mm": 3.7938700986622034,
+      "cap_rotation_deg": 258.9354326896804,
+      "max_slip_mm": 0.2857078364649787,
+      "disturbance_n": 5.658056451375615,
+      "steps": 1843
+    },
+    {
+      "trial": 15,
+      "success": true,
+      "pose_error_mm": 4.400001838241995,
+      "cap_rotation_deg": 246.92831807613442,
+      "max_slip_mm": 0.2065063365005601,
+      "disturbance_n": 5.9809902477228265,
+      "steps": 1840
+    },
+    {
+      "trial": 16,
+      "success": true,
+      "pose_error_mm": 3.291954494450324,
+      "cap_rotation_deg": 267.4927981279431,
+      "max_slip_mm": 0.12,
+      "disturbance_n": 5.351409073052663,
+      "steps": 1822
+    },
+    {
+      "trial": 17,
+      "success": true,
+      "pose_error_mm": 3.3721611135787457,
+      "cap_rotation_deg": 263.1952480638378,
+      "max_slip_mm": 0.24993834850722282,
+      "disturbance_n": 5.702659457755484,
+      "steps": 1842
+    },
+    {
+      "trial": 18,
+      "success": true,
+      "pose_error_mm": 3.7885618904071685,
+      "cap_rotation_deg": 248.8607521583511,
+      "max_slip_mm": 0.233659031493882,
+      "disturbance_n": 6.164578799729425,
+      "steps": 1722
+    },
+    {
+      "trial": 19,
+      "success": true,
+      "pose_error_mm": 4.3857883429718605,
+      "cap_rotation_deg": 258.33455716860374,
+      "max_slip_mm": 0.3341263334482695,
+      "disturbance_n": 5.641518435813231,
+      "steps": 1853
+    },
+    {
+      "trial": 20,
+      "success": true,
+      "pose_error_mm": 4.065798084817716,
+      "cap_rotation_deg": 248.79610161664078,
+      "max_slip_mm": 0.27652167929256416,
+      "disturbance_n": 5.969707102178013,
+      "steps": 1839
+    }
+  ]
+}

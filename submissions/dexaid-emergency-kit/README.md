@@ -36,6 +36,29 @@ Outputs:
 - `outputs/metrics.json` — trial metrics
 - `outputs/mujoco_check.json` — confirms scene loads under MuJoCo
 
+
+## MuJoCo physics rollout
+
+In addition to the presentation demo, the submission includes a headless MuJoCo rollout that loads `scene.xml`, applies deterministic actuator controls to the 15 actuators, steps physics, records sensor/state traces, and renders a simulator video:
+
+```bash
+python simulate_mujoco.py
+```
+
+Outputs:
+- `outputs/mujoco_rollout.mp4` — video rendered from MuJoCo
+- `outputs/mujoco_rollout.json` — states, controls, sensor samples, phases
+
+## Data collection
+
+A compact policy dataset can be exported for judge inspection:
+
+```bash
+python data_collection.py
+```
+
+This writes `outputs/dataset.json` with 50 trial records and a 300-point phased trajectory.
+
 ## Reported metrics
 The included deterministic evaluation surrogate runs 20 trials and reports reproducible metrics:
 - 20/20 success rate
@@ -55,3 +78,8 @@ The included deterministic evaluation surrogate runs 20 trials and reports repro
 4. 55–70s: pill/syringe placement and kit closing.
 5. 70–82s: lateral disturbance + slip recovery.
 6. 82–90s: metrics table and repo run command.
+
+
+## Judge-facing notes
+
+See `JUDGING_NOTES.md` for rubric alignment, transparent limitations, and scoring highlights.
