@@ -1,24 +1,12 @@
 {
   "success": true,
-  "video_duration_s": 180,
+  "frames": 168,
   "fps": 15,
-  "total_frames": 2700,
-  "resolution": "1280x720",
-  "rendering": "MuJoCo GLFW/Xvfb with text overlays",
-  "sim_time_s": 181.2,
-  "avg_contacts": 7.3,
-  "max_cap_rotation_deg": 300,
+  "duration_s": 11.2,
+  "rendering": "MuJoCo native GLFW via Xvfb",
+  "vial_delivered_x": 0.6295,
+  "vial_z": 0.1254,
   "actuators": 15,
   "sensors": 18,
-  "nq": 36,
-  "nbody": 16,
-  "features": [
-    "autonomous_task",
-    "keyboard_teleop",
-    "web_teleop",
-    "data_collection",
-    "real_physics",
-    "text_overlays"
-  ],
-  "score_claim": "3-min MuJoCo cinematic demo with narrative text overlays, web teleop, dual-mode control"
+  "nq": 36
 }
