@@ -1,54 +1,49 @@
 #!/usr/bin/env python3
-"""Headless MuJoCo rollout using real PD waypoint controller.
-Exports trajectory JSON + renders frames via matplotlib (OpenGL fallback).
-"""
-import json, pathlib, math
+"""Headless MuJoCo physics rollout with real rendering via Xvfb (streaming)."""
+import os, json, pathlib, subprocess, time, atexit, math
 import numpy as np
-import matplotlib.pyplot as plt
+import mujoco
 import imageio.v2 as imageio
-from robothon.controller import RealTaskController, PHASES
 
-ROOT = pathlib.Path(__file__).resolve().parent
-OUT = ROOT / "outputs"
-OUT.mkdir(exist_ok=True)
-
-def make_frame(state, w=960, h=540):
-    fig, ax = plt.subplots(figsize=(w / 120, h / 120), dpi=120)
-    ax.set_facecolor("#0d1117"); fig.patch.set_facecolor("#0d1117")
-    ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
-    q = state.get("qpos", []); c = state.get("ctrl", [])
-    ncon = state.get("ncon", 0); t = state.get("t", 0)
-    hx = 0.12 + (float(q[0]) if len(q) > 0 else 0); hy = 0.55 + (float(q[1]) if len(q) > 1 else 0) * 0.8
-    phase = PHASES[min(len(PHASES) - 1, int(t / 7.0 * len(PHASES)))]
-    cap_deg = math.degrees(abs(float(c[3]))) if len(c) > 3 else 0
-    ax.add_patch(plt.Rectangle((0.04, 0.16), 0.92, 0.08, color="#161b22"))
-    ax.add_patch(plt.Rectangle((0.68, 0.18), 0.28, 0.18, ec="#58a6ff", fc="#1a3a5c", lw=2))
-    ax.text(0.82, 0.42, "EMERGENCY KIT", ha="center", color="white", fontsize=8)
-    vial_x = 0.22 + 0.44 * max(0, min(1, t / 7.0 - 0.55) / 0.3)
-    ax.add_patch(plt.Circle((vial_x, 0.38), 0.035, color="#e6edf3"))
-    ax.add_patch(plt.Rectangle((vial_x - 0.01, 0.415), 0.02, 0.01, angle=cap_deg % 360, color="#ff6b5a"))
-    ax.add_patch(plt.Rectangle((hx - 0.035, hy - 0.025), 0.07, 0.05, fc="#d6a57e"))
-    close = np.mean([abs(float(c[i])) for i in range(5, min(15, len(c)))]) / 1.5 if len(c) >= 15 else 0.3
-    for k, dy in enumerate([-0.04, -0.02, 0, 0.02, 0.04]):
-        ax.plot([hx + 0.035, hx + 0.035 + 0.025 + 0.07 * close], [hy + dy, hy + dy * 0.4],
-                color="#ffd0a8", lw=4, solid_capstyle="round")
-    ax.text(0.05, 0.94, "DexAid RescueHand MuJoCo Rollout", color="white", fontsize=13, weight="bold")
-    ax.text(0.05, 0.88, f"Phase: {phase}  |  Contacts: {ncon}  |  t={t:.2f}s  |  Cap: {cap_deg:.0f}°",
-            color="#7ee787", fontsize=9)
-    fig.canvas.draw(); arr = np.asarray(fig.canvas.buffer_rgba())[:, :, :3].copy(); plt.close(fig)
-    return arr
+ROOT = pathlib.Path(__file__).resolve().parent; OUT = ROOT / "outputs"; OUT.mkdir(exist_ok=True)
+os.environ.setdefault("MUJOCO_GL", "glfw")
+Xvfb = None
+for port in [99,98,97]:
+    try:
+        os.environ["DISPLAY"] = f":{port}"
+        Xvfb = subprocess.Popen(["Xvfb",f":{port}","-screen","0","960x540x24"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+        time.sleep(0.5); break
+    except: continue
+if Xvfb: atexit.register(lambda: Xvfb.kill() if Xvfb.poll() is None else None)
+deg = math.radians
 
 def main():
-    ctrl = RealTaskController(); traj, metrics = ctrl.execute()
-    frames = [make_frame(s) for s in traj]
-    imageio.mimsave(str(OUT / "mujoco_rollout.mp4"), frames, fps=30, quality=8, macro_block_size=1)
-    (OUT / "mujoco_rollout.json").write_text(json.dumps({
-        "nq": metrics["nq"], "nu": metrics["nu"], "nsensor": metrics["nsensor"],
-        "sim_time_s": metrics["sim_time_s"], "states": traj
-    }, indent=2))
-    print(json.dumps({"ok": True, "video": "outputs/mujoco_rollout.mp4",
-                       "trajectory": "outputs/mujoco_rollout.json",
-                       "frames": len(frames), "nu": metrics["nu"], "nsensor": metrics["nsensor"]}))
-
-if __name__ == "__main__":
-    main()
+    m = mujoco.MjModel.from_xml_path(str(ROOT / "scene.xml")); d = mujoco.MjData(m)
+    renderer = mujoco.Renderer(m, height=540, width=960); dt = m.opt.timestep
+    fps, seconds = 15, 40; spf = max(1, int((1/fps)/dt))
+    home = np.array([0.05,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+    wps = [
+        (np.array([0.22,0.08,-0.04,0,0,0,deg(25),deg(30),deg(35),deg(35),deg(35),deg(30),deg(25),deg(20),deg(15)]), 4,12),
+        (np.array([0.22,0.08,-0.02,deg(5),0,deg(10),deg(48),deg(52),deg(58),deg(58),deg(58),deg(52),deg(48),deg(42),deg(38)]), 14,22),
+        (np.array([0.22,0.08,0.03,deg(300),0,deg(10),deg(52),deg(58),deg(62),deg(62),deg(62),deg(58),deg(52),deg(48),deg(42)]), 24,34),
+        (np.array([0.66,-0.10,0.04,deg(300),0,deg(10),deg(52),deg(58),deg(62),deg(62),deg(62),deg(58),deg(52),deg(48),deg(42)]), 35,38),
+        (np.array([0.66,-0.10,0.06,deg(300),deg(10),0,0,0,0,0,0,0,0,0,0]), 39,40),
+    ]
+    d.ctrl[:] = home
+    for _ in range(int(1.5/dt)): mujoco.mj_step(m, d)
+    c = home.copy(); states = []
+    writer = imageio.get_writer(str(OUT / "mujoco_rollout.mp4"), fps=fps, quality=8, macro_block_size=1)
+    for f in range(fps*seconds):
+        sec = f/fps; tgt = home
+        for wp, t0, t1 in wps:
+            if t0 <= sec <= t1:
+                x = (sec-t0)/max(0.01,t1-t0); alpha = 3*x**2 - 2*x**3
+                tgt = home + alpha*(wp - home)
+        c = c + 0.2*(tgt - c)
+        for _ in range(spf): d.ctrl[:] = c; mujoco.mj_step(m, d)
+        renderer.update_scene(d); writer.append_data(renderer.render())
+        if f % 30 == 0: states.append({"f":f,"t":round(d.time,3),"ncon":d.ncon})
+    writer.close()
+    (OUT/"mujoco_rollout.json").write_text(json.dumps({"nu":m.nu,"nsensor":m.nsensor,"nq":m.nq,"states":states},indent=2))
+    print(json.dumps({"ok":True,"video":"outputs/mujoco_rollout.mp4","nu":m.nu,"nsensor":m.nsensor}))
+if __name__=="__main__": main()

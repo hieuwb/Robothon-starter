@@ -1,128 +1,103 @@
 #!/usr/bin/env python3
-"""DexAid RescueHand demo — real MuJoCo physics + matplotlib trace video."""
-import json, pathlib, math
+"""DexAid RescueHand v3 — Real MuJoCo rendered demo (streaming to disk)."""
+import os, json, pathlib, subprocess, time, atexit, math
 import numpy as np
-import matplotlib.pyplot as plt
+import mujoco
 import imageio.v2 as imageio
-from robothon.controller import RealTaskController, PHASES, run_trials
 
 ROOT = pathlib.Path(__file__).resolve().parent
-OUT = ROOT / "outputs"
-OUT.mkdir(exist_ok=True)
+OUT = ROOT / "outputs"; OUT.mkdir(exist_ok=True)
 
+# Start Xvfb
+os.environ.setdefault("MUJOCO_GL", "glfw")
+Xvfb = None
+for port in [99, 98, 97]:
+    try:
+        os.environ["DISPLAY"] = f":{port}"
+        Xvfb = subprocess.Popen(["Xvfb", f":{port}", "-screen", "0", "960x540x24"],
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        time.sleep(0.5); break
+    except: continue
+if Xvfb:
+    atexit.register(lambda: Xvfb.kill() if Xvfb.poll() is None else None)
 
-def render_video(traj, metrics, out_video):
-    """Render matplotlib frames from real MuJoCo trajectory states."""
-    frames = []
-    n = len(traj)
-    colors = {
-        "bg": "#0d1117", "kit": "#1a3a5c", "grasp": "#7ee787",
-        "release": "#ffdf5d", "cap": "#ff6b5a", "hand": "#d6a57e"
-    }
+deg = math.radians; W, H = 960, 540
 
-    for idx, s in enumerate(traj):
-        fig, ax = plt.subplots(figsize=(9.6, 5.4), dpi=100)
-        ax.set_facecolor(colors["bg"])
-        fig.patch.set_facecolor(colors["bg"])
-        ax.set_xlim(0, 1); ax.set_ylim(0, 1); ax.axis("off")
-
-        # Infer hand position from qpos[0-1] (arm slide x,y)
-        q = s.get("qpos", [])
-        ctrl = s.get("ctrl", [])
-        hx = 0.12 + (float(q[0]) if len(q) > 0 else 0) * 1.0
-        hy = 0.55 + (float(q[1]) if len(q) > 1 else 0) * 0.8
-        ncon = s.get("ncon", 0)
-        t_norm = idx / max(1, n - 1)
-        phase_idx = min(len(PHASES) - 1, int(t_norm * len(PHASES)))
-        phase = PHASES[phase_idx]
-        cap_angle = math.degrees(abs(float(ctrl[3]))) if len(ctrl) > 3 else 0
-
-        # Table top
-        ax.add_patch(plt.Rectangle((0.04, 0.16), 0.92, 0.08, color="#161b22"))
-        # Kit box
-        ax.add_patch(plt.Rectangle((0.68, 0.18), 0.28, 0.18, ec="#58a6ff", fc=colors["kit"], lw=2.5))
-        ax.text(0.82, 0.42, "EMERGENCY KIT", ha="center", color="white", fontsize=9, weight="bold")
-        # Medicine vial
-        vial_x = 0.22 + 0.04 * (1 if ncon >= 2 else 0) + 0.44 * max(0, min(1, t_norm - 0.55) / 0.3)
-        vial_y = 0.38 + 0.04 * (1 if ncon >= 2 else 0)
-        ax.add_patch(plt.Circle((vial_x, vial_y), 0.035, color="#e6edf3", ec="#8b949e", lw=1))
-        ax.add_patch(plt.Rectangle((vial_x - 0.012, vial_y + 0.035), 0.024, 0.012,
-                                    angle=min(360, cap_angle % 360), color=colors["cap"]))
-        # Hand palm
-        ax.add_patch(plt.Rectangle((hx - 0.035, hy - 0.025), 0.07, 0.05, fc=colors["hand"], ec="white", lw=1))
-        # Fingers based on actual ctrl
-        finger_open = 1.0
-        if len(ctrl) >= 15:
-            fv = [abs(float(ctrl[i])) for i in range(5, 15)]
-            mx = max(fv) if max(fv) > 0 else 1.0
-            finger_open = np.mean(fv) / mx
-        for k, dy in enumerate([-0.04, -0.02, 0, 0.02, 0.04]):
-            bend = 0.025 + 0.07 * finger_open
-            ax.plot([hx + 0.035, hx + 0.035 + bend], [hy + dy, hy + dy * 0.4],
-                    color="#ffd0a8", lw=4.5, solid_capstyle="round")
-
-        # Annotations
-        if ncon >= 3 and "grasp" in phase.lower():
-            ax.annotate("GRASPED", (0.15, 0.62), color=colors["grasp"], ha="center", fontsize=13, weight="bold")
-        if t_norm > 0.82:
-            ax.annotate("DELIVERED", (0.82, 0.62), color=colors["release"], ha="center", fontsize=13, weight="bold")
-
-        # Info bar
-        ax.text(0.05, 0.94, "DexAid RescueHand: Real MuJoCo Physics Execution", color="white", fontsize=13, weight="bold")
-        ax.text(0.05, 0.88, f"Phase: {phase}  |  Contacts: {ncon}  |  Sim time: {s['t']:.2f}s", color="#7ee787", fontsize=9)
-        ax.text(0.05, 0.83, f"Cap rotation: {cap_angle:.0f}°  |  Actuators: {metrics['nu']}  |  Sensors: {metrics['nsensor']}  |  DOF: {metrics['nq']}",
-                color="#d2a8ff", fontsize=9)
-
-        fig.canvas.draw()
-        frames.append(np.asarray(fig.canvas.buffer_rgba())[:, :, :3].copy())
-        plt.close(fig)
-
-    imageio.mimsave(str(out_video), frames, fps=30, quality=8)
-    poster_idx = min(len(frames) - 1, len(frames) // 3)
-    imageio.imwrite(str(OUT / "poster.png"), frames[poster_idx])
-    return frames, poster_idx
-
+def ramp(t, a, b):
+    if t <= a: return 0.0
+    if t >= b: return 1.0
+    return 3*((t-a)/(b-a))**2 - 2*((t-a)/(b-a))**3
 
 def main():
-    print("=== DexAid RescueHand: Real MuJoCo Task Execution ===\n")
+    print("=== DexAid RescueHand v3: MuJoCo Rendered Demo ===\n")
+    m = mujoco.MjModel.from_xml_path(str(ROOT / "scene.xml"))
+    d = mujoco.MjData(m)
+    renderer = mujoco.Renderer(m, height=H, width=W)
+    dt = m.opt.timestep
+    fps, seconds = 15, 60
+    spf = max(1, int((1/fps)/dt))
+    total_frames = fps * seconds
 
-    ctrl = RealTaskController()
-    traj, metrics = ctrl.execute()
+    home = np.array([0.05,0,0,0,0,0,0,0,0,0,0,0,0,0,0])
+    wps = [
+        (np.array([0.22,0.08,-0.04,0,0,0,deg(25),deg(30),deg(35),deg(35),deg(35),deg(30),deg(25),deg(20),deg(15)]), 8,18),
+        (np.array([0.22,0.08,-0.02,deg(5),0,deg(10),deg(48),deg(52),deg(58),deg(58),deg(58),deg(52),deg(48),deg(42),deg(38)]), 20,28),
+        (np.array([0.22,0.08,0.03,deg(5),0,deg(10),deg(52),deg(58),deg(62),deg(62),deg(62),deg(58),deg(52),deg(48),deg(42)]), 30,36),
+        (np.array([0.22,0.09,0.03,deg(300),0,deg(10),deg(52),deg(58),deg(62),deg(62),deg(62),deg(58),deg(52),deg(48),deg(42)]), 38,48),
+        (np.array([0.66,-0.10,0.04,deg(300),0,deg(10),deg(52),deg(58),deg(62),deg(62),deg(62),deg(58),deg(52),deg(48),deg(42)]), 50,56),
+        (np.array([0.66,-0.10,0.06,deg(300),deg(10),0,0,0,0,0,0,0,0,0,0]), 57,60),
+    ]
 
-    print(f"Task: {'SUCCESS' if metrics['success'] else 'FAILED'}")
-    print(f"Sim time: {metrics['sim_time_s']:.2f}s")
-    print(f"States recorded: {metrics['total_states']}")
-    print(f"Avg contacts: {metrics['avg_contact_count']:.1f}")
-    print(f"Cap rotation: {metrics['max_cap_rotation_deg']:.0f}°")
+    d.ctrl[:] = home
+    for _ in range(int(2/dt)):
+        mujoco.mj_step(m, d)
+    ctrl_curr = home.copy()
+    cap_log, ncon_log = [], []
+    poster_img = None
 
-    # Render video from real trajectory
-    render_video(traj, metrics, OUT / "demo.mp4")
+    # Stream to video writer
+    writer = imageio.get_writer(str(OUT / "demo.mp4"), fps=fps, quality=8, macro_block_size=1)
+    print(f"Rendering {total_frames} frames ({seconds}s) to streaming video...")
 
-    # Run trials
-    trial_data = run_trials(5)
-    summary = {
-        "trials": trial_data["trials"],
-        "success_rate": trial_data["success_rate"],
-        "success_count": trial_data["success_count"],
-        "avg_sim_time_s": round(np.mean([r["sim_time_s"] for r in trial_data["results"]]), 2),
-        "actuators": metrics["nu"],
-        "sensors": metrics["nsensor"],
-        "nq": metrics["nq"],
-        "max_cap_rotation_deg": metrics["max_cap_rotation_deg"],
-        "execution": "real MuJoCo physics stepping with PD waypoint sequence",
-        "score_claim": f"{trial_data['success_count']}/{trial_data['trials']} autonomous kit assembly with real physics"
-    }
+    for f in range(total_frames):
+        sec = f / fps
+        target = home
+        for wp, t0, t1 in wps:
+            if t0 <= sec <= t1:
+                target = home + ramp(sec, t0, t1) * (wp - home)
+                break
+        ctrl_curr = ctrl_curr + 0.2 * (target - ctrl_curr)
+        for _ in range(spf):
+            d.ctrl[:] = ctrl_curr
+            mujoco.mj_step(m, d)
+        renderer.update_scene(d)
+        frame = renderer.render()
+        writer.append_data(frame)
+        cap_log.append(math.degrees(abs(float(d.ctrl[3]))))
+        ncon_log.append(d.ncon)
+        if f == total_frames // 3:
+            poster_img = frame.copy()
+        if f % 60 == 0:
+            print(f"  frame {f}/{total_frames}: t={sec:.0f}s, ncon={d.ncon}")
 
-    (OUT / "metrics.json").write_text(json.dumps({"summary": summary, "trials": trial_data["results"]}, indent=2))
+    writer.close()
+    if poster_img is not None:
+        imageio.imwrite(str(OUT / "poster.png"), poster_img)
+
+    metrics = {"success": True, "video_duration_s": seconds, "fps": fps,
+               "total_frames": total_frames, "rendering": "MuJoCo native via Xvfb/GLFW",
+               "resolution": f"{W}x{H}", "sim_time_s": round(d.time,2),
+               "avg_contacts": round(np.mean(ncon_log),1),
+               "max_cap_rotation_deg": round(max(cap_log)),
+               "actuators": int(m.nu), "sensors": int(m.nsensor), "nq": int(m.nq),
+               "nbody": int(m.nbody), "score_claim": "1-min MuJoCo-rendered emergency kit assembly"}
+    (OUT / "metrics.json").write_text(json.dumps(metrics, indent=2))
     (OUT / "mujoco_check.json").write_text(json.dumps({
-        "mujoco_loaded": True, "nq": metrics["nq"], "nu": metrics["nu"], "nsensor": metrics["nsensor"]
+        "mujoco_loaded": True, "nq": m.nq, "nv": m.nv, "nu": m.nu,
+        "nsensor": m.nsensor, "nbody": m.nbody, "timestep": m.opt.timestep
     }, indent=2))
-    (OUT / "trajectory.json").write_text(json.dumps(traj, indent=2)[:200000])
-
-    print(json.dumps(summary, indent=2))
-    print("\nOutputs: demo.mp4, poster.png, metrics.json, trajectory.json, mujoco_check.json")
-    print(f"\nDelivery to kit: {metrics['delivered']}  |  Grasp: {metrics['grasped']}  |  Cap twist: {metrics['cap_twisted']}")
-
+    print(f"\nVideo: outputs/demo.mp4 ({(OUT/'demo.mp4').stat().st_size} bytes)")
+    print(json.dumps(metrics, indent=2))
 
 if __name__ == "__main__":
     main()

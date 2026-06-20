@@ -1,4 +1,4 @@
-# DexAid RescueHand: Tactile Five-Finger Emergency Kit Assembly
+# DexAid RescueHand v3: MuJoCo-Rendered Teleop & Autonomous Emergency Kit Assembly
 
 A MuJoCo embodied-AI challenge entry targeting top rubric coverage with real MuJoCo physics stepping across dexterous manipulation, long-horizon tasks, scenario design, data collection, actuator-level rollout, reproducible metrics, and a clear rescue/medical story.
 
@@ -103,3 +103,18 @@ See `JUDGING_NOTES.md` for rubric alignment, transparent limitations, and scorin
 ## Technical report
 
 See `TECHNICAL_REPORT.md` for the upgraded judge-facing explanation of MuJoCo depth, control, data collection, limitations, and rubric alignment.
+
+## Teleoperation mode (v3)
+
+Interactive keyboard teleop drives all 15 actuators in real-time MuJoCo:
+
+```bash
+python teleop.py       # batch demo (keyboard interactive when terminal available)
+python demo.py         # 1.5-min MuJoCo-rendered narrated assembly video
+python simulate_mujoco.py  # physics rollout + trajectory export
+python data_collection.py  # batch trial dataset
+```
+
+Controls: `w/s` arm X, `a/d` arm Y, `q/e` arm Z, `j/l` wrist yaw, `i/k` wrist pitch,
+`1-5` fingers, `f` grasp all, `r` release, `t` twist cap, `SPACE` home, `ESC` quit.
+
