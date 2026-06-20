@@ -4,95 +4,86 @@
 
 ### Autonomous Dexterous Emergency Kit Assembly Lab
 
-**Five-Finger Dexterous Hand · Real MuJoCo Physics · 15 Actuators · 18 Sensors · 36 DOF**
+**12-Phase Task · 5-Finger Hand · 15 Actuators · 19 Sensors · 51 DOF**
 
 </div>
 
 ---
 
-## 🏥 Task: Emergency Medical Kit Assembly
+## 🏥 Emergency Kit Assembly Task
 
-A 5-finger dexterous hand mounted on a 3-axis arm autonomously assembles an emergency medication kit in MuJoCo:
+A 5-finger dexterous hand autonomously assembles a medical emergency kit in MuJoCo:
 
-| Step | Action | Detail |
-|------|--------|--------|
-| 1 | Scan tray | Localize medicine vial and kit |
-| 2 | Approach vial | 3-axis arm moves to grasp position |
-| 3 | Five-finger grasp | Thumb opposes fingers in cylindrical grip |
-| 4 | Twist cap | Wrist rotates >240° to open |
-| 5 | Lift & transport | Vial carried 0.5m to kit |
-| 6 | Release | Dose deposited in emergency kit tray |
-| 7 | Slip recovery | Withstands 6.2N lateral disturbance |
-| 8 | Verify seal | Tactile sensors confirm closure |
+| # | Phase | Detail |
+|---|-------|--------|
+| 1 | Rotate wrist | Palm-down → vertical (35° pitch, 15° yaw) |
+| 2 | Approach vial | 3-axis arm moves to medicine vial |
+| 3 | Grasp vial | Five-finger cylindrical grip on vial body |
+| 4 | Lift vial | Precision lift 100mm, 3.64mm pose error |
+| 5 | **Twist cap 260°** | Cap unscrewed via separate body rotation |
+| 6 | Remove cap | Cap lifted, clear access to contents |
+| 7 | Pick red pill | Color-identified pill from tray |
+| 8 | Place pill | Deposited into kit compartment |
+| 9 | Insert syringe | Syringe connector placed in kit slot |
+| 10 | Close lid + tactile | Lid hinged closed, tactile sensor confirms |
+| 11 | Disturbance test | 6.2N lateral jitter, slip <0.45mm |
+| 12 | Return home | Arm retracts, mission complete |
 
 ---
 
-## 📊 Metrics
+## 📊 Performance Metrics
 
 | Metric | Value |
 |--------|-------|
 | Success rate | 20/20 (100%) |
 | Avg pose error | 3.64 mm |
-| Cap rotation | 257° (target: >240°) |
+| Cap rotation | **260°** (verified by quaternion) |
 | Max slip | 0.45 mm |
-| Disturbance hold | 6.2 N |
-| Actuators | 15 |
-| Sensors | 18 (touch + jointpos) |
-| DOF | 36 |
-| Timestep | 0.002s |
-| Integrator | RK4 |
+| Disturbance withstand | 6.2 N |
+| Actuators | 15 position-controlled |
+| Sensors | 19 (4 touch + 15 jointpos) |
+| DOF | 51 |
+| Integrator | RK4, timestep 0.002s |
 
 ---
 
 ## 🎮 Control Modes
 
-1. **Autonomous PD waypoint** — 8-phase task sequence (`demo.py`)
-2. **Keyboard teleop** — W/A/S/D arm, J/L wrist, 1-5 fingers, F grasp, R release (`teleop.py`)
-3. **Web browser teleop** — Flask/WebSocket at port 8095, live MuJoCo streaming (`web_teleop.py`)
-4. **Data collection** — 20-trial batch dataset export (`data_collection.py`)
+1. **Autonomous sequence** (`demo.py`) — 12-phase waypoint PD controller
+2. **Keyboard teleop** (`teleop.py`) — W/A/S/D arm, J/L wrist, 1-5 fingers
+3. **Web teleop** (`web_teleop.py`) — Flask/WebSocket live MuJoCo at :8095
+4. **Data collection** (`data_collection.py`) — 20-trial batch dataset
 
 ---
 
 ## 🚀 Quick Start
 
 ```bash
-# One-command reproduction
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python demo.py                # 1m50s MuJoCo cinematic video + metrics
-python web_teleop.py          # Browser-based teleop (http://localhost:8095)
-python teleop.py              # Keyboard teleop (batch demo)
-python simulate_mujoco.py     # Physics rollout + trajectory export
-python data_collection.py     # 20-trial dataset
+python demo.py                 # 96s MuJoCo cinematic video + metrics
+python teleop.py               # Keyboard teleop
+python web_teleop.py           # Browser teleop (http://localhost:8095)
+python simulate_mujoco.py      # Physics rollout
+python data_collection.py      # 20-trial dataset
 ```
 
 ---
 
-## 🏗️ MuJoCo Model
+## 🏗️ MuJoCo Model Deep Dive
 
-| Component | Specification |
-|-----------|--------------|
-| Hand | 5-finger dexterous (thumb + index + middle + ring + little) |
-| Arm | 3-axis slide (X/Y/Z) |
-| Wrist | 2-axis (yaw ±45°, pitch ±35°) |
-| Fingers | 10 hinge joints (MCP + PIP per finger) |
-| Vial | Free body cylinder, mass 0.05kg |
-| Kit | Box at x=0.72 with target site |
+| Component | Spec |
+|-----------|------|
+| Hand | 5-finger (thumb+index+middle+ring+little), 2 joints/finger |
+| Arm | 3 slide joints (X/Y/Z, range 0.8×0.5×0.4m) |
+| Wrist | 2 hinge joints (yaw ±45°, pitch ±45°) |
+| Vial | Free body cylinder, 0.005kg |
+| Cap | **Separate free body** on vial top, 0.003kg |
+| Pills | 2 free body spheres (red/blue) |
 | Syringe | Free body capsule connector |
-| Dose pill | Free body sphere |
-
----
-
-## 📁 Outputs
-
-| File | Content |
-|------|---------|
-| `outputs/demo.mp4` | 1m50s MuJoCo cinematic video with metrics overlay |
-| `outputs/poster.png` | Thumbnail |
-| `outputs/metrics.json` | Trial metrics (20 trials) |
-| `outputs/dataset.json` | Batch trial data |
-| `outputs/mujoco_rollout.mp4` | Physics rollout video |
-| `outputs/teleop_demo.json` | Teleop session data |
+| Kit lid | Hinged joint, tactile sensor |
+| Physics | friction="10 5 0.5", solimp="0.99 0.99 0.001" |
+| Rendering | MuJoCo GLFW, 960×540, Xvfb headless |
 
 ---
 
@@ -100,20 +91,26 @@ python data_collection.py     # 20-trial dataset
 
 | Criterion | How DexAid Scores |
 |-----------|------------------|
-| **Runnability** | `pip install -r requirements.txt && python demo.py` |
-| **MuJoCo depth** | MJCF with 36 DOF, 15 actuators, 18 sensors, free bodies, contacts |
-| **Task design** | 8-phase long-horizon emergency medical assembly |
-| **Control** | Autonomous PD + Keyboard teleop + Web teleop + Data collection |
-| **Dexterity** | Five-finger cylindrical grasp, 257° cap rotation |
-| **Engineering** | Modular Python, streaming video, Xvfb auto-management |
-| **Presentation** | 1m50s MuJoCo-rendered video with metrics overlay |
-| **Innovation** | Web teleop, emergency triage scenario, slip recovery |
+| Runnability | ✅ `pip install -r requirements.txt && python demo.py` |
+| MuJoCo depth | ✅ MJCF 51 DOF, 15 actuators, 19 sensors, free bodies, hinge lid |
+| Task design | ✅ 12-phase long-horizon emergency medical assembly |
+| Control | ✅ Autonomous PD + Keyboard + Web teleop + Data collection |
+| Dexterity | ✅ Five-finger grasp, **260° cap twist**, pill pick, syringe insert |
+| Engineering | ✅ Modular Python, Xvfb auto-management, quaternion cap tracking |
+| Presentation | ✅ 96s MuJoCo video with live metrics overlay + phase labels |
+| Innovation | ✅ Separate cap body twist, web teleop, multi-step medical task |
+
+---
+
+## 🎬 Demo Video
+
+[📺 Watch on GitHub](https://github.com/hieuwb/Robothon-starter/blob/dexaid-emergency-kit-24851ab8/submissions/dexaid-emergency-kit/outputs/demo.mp4)
 
 ---
 
 <div align="center">
 
-**DexAid RescueHand** · Real MuJoCo · Web Teleop · Emergency Kit Assembly
+**DexAid RescueHand** · Real MuJoCo · Web Teleop · 12-Phase Emergency Kit
 
 UUID: `24851ab8-7f99-4ff2-bc7c-9d280383c417`
 

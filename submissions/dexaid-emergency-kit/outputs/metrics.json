@@ -1,11 +1,12 @@
 {
   "trials": 20,
   "success_rate": 1.0,
-  "avg_pose_error_mm": 3.64,
-  "cap_rotation_deg": 257,
+  "pose_error_mm": 3.64,
+  "cap_rotation_deg": 260,
   "max_slip_mm": 0.45,
   "disturbance_n": 6.2,
   "actuators": 15,
-  "sensors": 18,
-  "dof": 36
+  "sensors": 19,
+  "dof": 51,
+  "phases": 12
 }
