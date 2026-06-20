@@ -3,5 +3,7 @@
   "nq": 51,
   "nv": 46,
   "nu": 15,
-  "nsensor": 19
+  "nsensor": 19,
+  "nbody": 19,
+  "ngeom": 30
 }

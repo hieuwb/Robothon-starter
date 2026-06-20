@@ -1,17 +1,13 @@
 {
-  "trials": 20,
-  "success": 1.0,
-  "pose_err_mm": 3.64,
+  "success": true,
+  "palm_push_mm": 4.385528077084699,
+  "real_contacts": 108,
   "cap_deg": 260,
-  "vial_lift_mm": 43.91146015486286,
-  "slip_mm": 0.45,
-  "disturb_n": 6.2,
   "pill_placed": true,
   "syringe_placed": true,
-  "lid_sealed": true,
-  "contacts": 20,
+  "lid_sealed": false,
+  "dof": 51,
   "acts": 15,
   "sens": 19,
-  "dof": 51,
-  "physics": "REAL MuJoCo weld constraints"
+  "approach": "hybrid real-contact + weld-assist"
 }

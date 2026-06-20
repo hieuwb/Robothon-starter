@@ -4,35 +4,26 @@
   <visual><global offwidth="1280" offheight="720"/></visual>
   <default>
     <joint damping="1.0" armature="0.02"/>
-    <geom friction="1.2 0.08 0.02" solref="0.01 1" solimp="0.9 0.95 0.001"/>
+    <geom friction="8 5 0.6" solref="0.005 1" solimp="0.99 0.99 0.001"/>
   </default>
   <worldbody>
     <light pos="0 -3 4" dir="0 1 -1"/>
+    <camera name="overhead" pos="0.35 0 3.2" xyaxes="1 0 0 0 1 0"/>
+    <camera name="side" pos="0.35 -2.2 0.7" xyaxes="1 0 0 0 0 1"/>
+    <camera name="closeup" pos="0.28 0.5 0.5" xyaxes="1 0 0 0 0 1"/>
 
-    <!-- Cameras -->
-    <camera name="overhead" pos="0.35 0 3.5" xyaxes="1 0 0 0 1 0"/>
-    <camera name="side" pos="0.35 -2.5 0.8" xyaxes="1 0 0 0 0 1"/>
-    <camera name="closeup" pos="0.25 0.6 0.5" xyaxes="1 0 0 0 0 1"/>
-    <camera name="kit_view" pos="0.72 -0.8 0.6" xyaxes="-1 0 0 0 0 1"/>
-
-    <!-- Table -->
     <geom name="table" type="box" size="0.75 0.45 0.03" pos="0.35 0 0.02" rgba="0.12 0.14 0.16 1"/>
-
-    <!-- Pill tray -->
     <geom name="pill_tray" type="box" size="0.15 0.12 0.015" pos="0.15 -0.15 0.075" rgba="0.6 0.6 0.65 1"/>
 
-    <!-- Red Pill -->
     <body name="pill_red" pos="0.18 -0.15 0.11">
       <joint name="pill_red_f" type="free" damping="0.2"/>
       <geom type="sphere" size="0.016" rgba="1 0.2 0.2 1" mass="0.003"/>
     </body>
-    <!-- Blue Pill -->
     <body name="pill_blue" pos="0.12 -0.15 0.11">
       <joint name="pill_blue_f" type="free" damping="0.2"/>
       <geom type="sphere" size="0.016" rgba="0.2 0.4 1 1" mass="0.003"/>
     </body>
 
-    <!-- Emergency Kit Box -->
     <body name="kit_box" pos="0.72 -0.12 0.06">
       <geom name="kit_base" type="box" size="0.16 0.11 0.025" pos="0 0 0.025" rgba="0.08 0.4 0.85 1"/>
       <geom type="box" size="0.06 0.09 0.018" pos="-0.05 0 0.04" rgba="0.15 0.45 0.85 0.7"/>
@@ -40,34 +31,29 @@
       <body name="kit_lid" pos="0 0 0.05">
         <joint name="lid_hinge" type="hinge" axis="0 1 0" range="0 90" damping="0.5"/>
         <geom name="lid_geom" type="box" size="0.16 0.11 0.01" pos="0 0 0.01" rgba="0.9 0.85 0.8 1"/>
-        <geom name="lid_handle" type="box" size="0.04 0.015 0.005" pos="0 0 0.022" rgba="0.7 0.7 0.7 1"/>
         <site name="lid_touch_site" pos="0.08 0 0.015" size="0.008" type="sphere" rgba="0 1 0 0.4"/>
       </body>
     </body>
 
-    <!-- Medicine vial -->
     <body name="medicine_vial" pos="0.25 0.10 0.13">
       <joint name="vial_free" type="free" damping="0.15"/>
-      <geom name="vial_body" type="cylinder" size="0.035 0.075" rgba="0.9 0.9 0.95 1" mass="0.05" friction="5 3 0.3"/>
-      <site name="vial_grasp_site" pos="0 0 0.03" size="0.025" type="sphere" rgba="0 1 0 0.2"/>
+      <geom name="vial_body" type="cylinder" size="0.035 0.075" rgba="0.9 0.9 0.95 1" mass="0.05" friction="12 8 0.8"/>
     </body>
 
-    <!-- Cap with markings -->
     <body name="medicine_cap" pos="0.25 0.10 0.21">
       <joint name="cap_free" type="free" damping="0.3"/>
-      <geom name="cap_geom" type="cylinder" size="0.037 0.015" rgba="0.9 0.25 0.2 1" mass="0.008" friction="5 3 0.3"/>
+      <geom name="cap_geom" type="cylinder" size="0.037 0.015" rgba="0.9 0.25 0.2 1" mass="0.008" friction="12 8 0.6"/>
       <geom type="box" size="0.037 0.004 0.016" pos="0 0 0" rgba="0.75 0.15 0.1 1"/>
       <geom type="box" size="0.004 0.037 0.016" pos="0 0 0" rgba="0.75 0.15 0.1 1"/>
       <geom name="cap_notch" type="box" size="0.008 0.005 0.018" pos="0.032 -0.025 0" rgba="1 1 1 0.9"/>
     </body>
 
-    <!-- Syringe -->
     <body name="syringe" pos="0.50 0.18 0.10">
       <joint name="syringe_free" type="free" damping="0.18"/>
-      <geom type="capsule" fromto="-0.06 0 0 0.06 0 0" size="0.011" rgba="0.85 0.95 1 1" mass="0.02" friction="5 3 0.3"/>
+      <geom type="capsule" fromto="-0.06 0 0 0.06 0 0" size="0.011" rgba="0.85 0.95 1 1" mass="0.02" friction="12 8 0.6"/>
     </body>
 
-    <!-- Dexterous Hand -->
+    <!-- 5-finger hand with SPHERE TIPS for contact grasping -->
     <body name="dex_hand_base" pos="0.04 0.0 0.18">
       <joint name="arm_x" type="slide" axis="1 0 0" range="0 0.9"/>
       <joint name="arm_y" type="slide" axis="0 1 0" range="-0.3 0.3"/>
@@ -76,79 +62,68 @@
       <joint name="wrist_pitch" type="hinge" axis="0 1 0" range="-45 45" damping="0.4"/>
       <geom type="box" size="0.055 0.035 0.025" rgba="0.75 0.55 0.45 1"/>
       <site name="palm_site" pos="0.055 0 0" size="0.025" type="sphere" rgba="0 1 0 0.25"/>
-      <!-- Anchor sites for weld constraints -->
-      <site name="grasp_anchor" pos="0.08 0.01 -0.02" size="0.01" type="sphere" rgba="1 0 0 0.5"/>
-      <site name="cap_anchor" pos="0.08 0.01 0.06" size="0.01" type="sphere" rgba="1 1 0 0.5"/>
-      <!-- 5 fingers -->
+
       <body name="thumb" pos="0.04 -0.035 0">
         <joint name="thumb_abd" type="hinge" axis="0 0 1" range="-35 35"/>
-        <geom type="capsule" fromto="0 0 0 .055 -.035 0" size=".009" friction="10 5 0.5"/>
+        <geom type="capsule" fromto="0 0 0 .055 -.035 0" size=".009" friction="15 10 0.8"/>
         <body pos=".055 -.035 0">
           <joint name="thumb_pip" type="hinge" axis="0 1 0" range="0 90"/>
-          <geom type="capsule" fromto="0 0 0 .04 0 0" size=".008" friction="10 5 0.5"/>
+          <geom type="capsule" fromto="0 0 0 .04 0 0" size=".008" friction="15 10 0.8"/>
+          <geom name="thumb_tip" type="sphere" pos=".04 0 0" size=".018" rgba="0.85 0.7 0.6 0.6" friction="20 15 0.8"/>
         </body>
       </body>
+
       <body name="index" pos="0.055 -0.018 0">
         <joint name="index_mcp" type="hinge" axis="0 1 0" range="0 100"/>
-        <geom type="capsule" fromto="0 0 0 .07 0 0" size=".008" friction="10 5 0.5"/>
+        <geom type="capsule" fromto="0 0 0 .07 0 0" size=".008" friction="15 10 0.8"/>
         <body pos=".07 0 0">
           <joint name="index_pip" type="hinge" axis="0 1 0" range="0 100"/>
-          <geom type="capsule" fromto="0 0 0 .045 0 0" size=".007" friction="10 5 0.5"/>
+          <geom type="capsule" fromto="0 0 0 .045 0 0" size=".007" friction="15 10 0.8"/>
+          <geom name="index_tip" type="sphere" pos=".045 0 0" size=".018" rgba="0.85 0.7 0.6 0.6" friction="20 15 0.8"/>
           <site name="index_tip_site" pos=".045 0 0" size=".006" type="sphere" rgba="0 1 0 .35"/>
         </body>
       </body>
+
       <body name="middle" pos="0.06 0 0">
         <joint name="middle_mcp" type="hinge" axis="0 1 0" range="0 100"/>
-        <geom type="capsule" fromto="0 0 0 .078 0 0" size=".008" friction="10 5 0.5"/>
+        <geom type="capsule" fromto="0 0 0 .078 0 0" size=".008" friction="15 10 0.8"/>
         <body pos=".078 0 0">
           <joint name="middle_pip" type="hinge" axis="0 1 0" range="0 100"/>
-          <geom type="capsule" fromto="0 0 0 .048 0 0" size=".007" friction="10 5 0.5"/>
+          <geom type="capsule" fromto="0 0 0 .048 0 0" size=".007" friction="15 10 0.8"/>
+          <geom name="middle_tip" type="sphere" pos=".048 0 0" size=".018" rgba="0.85 0.7 0.6 0.6" friction="20 15 0.8"/>
           <site name="middle_tip_site" pos=".048 0 0" size=".006" type="sphere" rgba="0 1 0 .35"/>
         </body>
       </body>
+
       <body name="ring" pos="0.055 0.018 0">
         <joint name="ring_mcp" type="hinge" axis="0 1 0" range="0 100"/>
-        <geom type="capsule" fromto="0 0 0 .07 0 0" size=".008" friction="10 5 0.5"/>
+        <geom type="capsule" fromto="0 0 0 .07 0 0" size=".008" friction="15 10 0.8"/>
         <body pos=".07 0 0">
           <joint name="ring_pip" type="hinge" axis="0 1 0" range="0 100"/>
-          <geom type="capsule" fromto="0 0 0 .043 0 0" size=".007" friction="10 5 0.5"/>
+          <geom type="capsule" fromto="0 0 0 .043 0 0" size=".007" friction="15 10 0.8"/>
+          <geom name="ring_tip" type="sphere" pos=".043 0 0" size=".018" rgba="0.85 0.7 0.6 0.6" friction="20 15 0.8"/>
         </body>
       </body>
+
       <body name="little" pos="0.05 0.035 0">
         <joint name="little_mcp" type="hinge" axis="0 1 0" range="0 100"/>
-        <geom type="capsule" fromto="0 0 0 .06 0 0" size=".007" friction="10 5 0.5"/>
+        <geom type="capsule" fromto="0 0 0 .06 0 0" size=".007" friction="15 10 0.8"/>
         <body pos=".06 0 0">
           <joint name="little_pip" type="hinge" axis="0 1 0" range="0 100"/>
-          <geom type="capsule" fromto="0 0 0 .038 0 0" size=".006" friction="10 5 0.5"/>
+          <geom type="capsule" fromto="0 0 0 .038 0 0" size=".006" friction="15 10 0.8"/>
+          <geom name="little_tip" type="sphere" pos=".038 0 0" size=".018" rgba="0.85 0.7 0.6 0.6" friction="20 15 0.8"/>
         </body>
       </body>
     </body>
   </worldbody>
-
-  <!-- WELD CONSTRAINTS for physics-based grasping -->
-  <equality>
-    <!-- Weld hand base → vial (initially inactive) -->
-    <weld name="weld_vial" body1="dex_hand_base" body2="medicine_vial" 
-          anchor="0.08 0.01 -0.02" active="false" solref="0.005 1"/>
-    <!-- Weld hand base → cap -->
-    <weld name="weld_cap" body1="dex_hand_base" body2="medicine_cap"
-          anchor="0.08 0.01 0.06" active="false" solref="0.005 1"/>
-    <!-- Weld hand base → pill -->
-    <weld name="weld_pill" body1="dex_hand_base" body2="pill_red"
-          anchor="0.08 0.0 -0.02" active="false" solref="0.005 1"/>
-    <!-- Weld hand base → syringe -->
-    <weld name="weld_syringe" body1="dex_hand_base" body2="syringe"
-          anchor="0.08 0.0 -0.02" active="false" solref="0.005 1"/>
-  </equality>
-
   <actuator>
     <position joint="arm_x" kp="220"/><position joint="arm_y" kp="220"/><position joint="arm_z" kp="220"/>
     <position joint="wrist_yaw" kp="35"/><position joint="wrist_pitch" kp="35"/>
-    <position joint="thumb_abd" kp="12"/><position joint="thumb_pip" kp="12"/>
-    <position joint="index_mcp" kp="12"/><position joint="index_pip" kp="12"/>
-    <position joint="middle_mcp" kp="12"/><position joint="middle_pip" kp="12"/>
-    <position joint="ring_mcp" kp="12"/><position joint="ring_pip" kp="12"/>
-    <position joint="little_mcp" kp="12"/><position joint="little_pip" kp="12"/>
+    <position joint="thumb_abd" kp="15"/><position joint="thumb_pip" kp="15"/>
+    <position joint="index_mcp" kp="15"/><position joint="index_pip" kp="15"/>
+    <position joint="middle_mcp" kp="15"/><position joint="middle_pip" kp="15"/>
+    <position joint="ring_mcp" kp="15"/><position joint="ring_pip" kp="15"/>
+    <position joint="little_mcp" kp="15"/><position joint="little_pip" kp="15"/>
   </actuator>
   <sensor>
     <touch name="palm_touch" site="palm_site"/>
