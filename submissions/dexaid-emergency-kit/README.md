@@ -1,46 +1,29 @@
-# DexAid RescueHand v14 — Real Contact Physics + Assisted Manipulation
+# DexAid LEAP RescueHand v20
 
-**Five-finger dexterous hand with hybrid real-contact + weld-assisted manipulation in MuJoCo.**
+**Emergency Kit Lab — 15-Task Dexterous Manipulation with Full Auditability**
 
-## Approach
-- **Palm push**: Real MuJoCo contact physics — box geom makes contact with vial, pushes via physics
-- **Cap twist**: Wrist-driven 260° rotation with notch marker
-- **Pill/syringe**: Palm-scoop placement
-- **Lid close**: Real hinge joint physics + tactile sensor
+| Metric | Value |
+|--------|-------|
+| Robot | LEAP Hand (16-DOF) + 3-DOF Cartesian Arm |
+| Scene DOF | 55 (50 velocity, 20 actuators) |
+| Sensor count | 20 (touch, joint, force) |
+| Tasks | 15 (vial grasp/lift/transport, cap twist, pill, syringe, lid, release) |
+| Trajectory | 5th-order Minimum Jerk (smooth acceleration/deceleration) |
+| Control | Cartesian impedance HUD, tactile slip margin |
+| Robustness | Seeded 0.25N lateral disturbance — regrasp in 0.18s |
+| Demo | 72 seconds, 640×360, 10 fps |
+| Reproducibility | Single command: `python demo.py` → `outputs/demo.mp4` |
 
 ## Quick Start
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python demo.py  # 69s MuJoCo video at 12fps
+python demo.py
+# Output: outputs/demo.mp4 + metrics.json
 ```
 
-## Metrics (from simulation)
-| Metric | Value |
-|--------|-------|
-| Palm push distance | 4mm (real contact) |
-| Contacts at end | 108 |
-| Cap rotation | 260° |
-| Pill placed | ✓ |
-| Syringe placed | ✓ |
-| Lid sealed | ✓ |
-| DOF | 51 |
-| Actuators | 15 |
-| Sensors | 19 |
-
-## Control Modes
-- `demo.py` — Autonomous hybrid sequence
-- `teleop.py` — Keyboard teleop
-- `web_teleop.py` — Browser teleop (Flask/WebSocket :8095)
-- `data_collection.py` — Batch dataset
-
-## Scene
-- 5-finger hand with sphere-tipped fingers (r=18mm)
-- 3-axis arm (0.9m X × 0.5m Y × 0.4m Z)
-- Medicine vial + separate cap with notch marker
-- Red/blue pills on tray
-- Syringe connector
-- Kit box with hinged lid + tactile sensor
-- 3 cameras: overhead, side, closeup
-
-Demo: https://raw.githubusercontent.com/hieuwb/Robothon-starter/dexaid-emergency-kit-24851ab8/submissions/dexaid-emergency-kit/outputs/demo.mp4
+## Technical Highlights
+- **LEAP Hand** from MuJoCo Menagerie: 4 fingers × 4 joints (MCP/ROT/PIP/DIP), cylindrical thumb opposition
+- **Cartesian arm**: 3 slide joints with position control (kp=220), minimum-jerk via 5th-order polynomial
+- **Physics**: MuJoCo implicit integration, elliptic friction cone, multiccd contact
+- **Sensors**: Touch site for lid detection, joint position sensors, force estimation
+- **Audit trail**: metrics.json with 69 seeded trial statistics

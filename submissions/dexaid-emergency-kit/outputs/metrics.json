@@ -1,10 +1,31 @@
 {
-  "palm_push_mm": 10.609104934045154,
-  "contacts": 36,
-  "cap_deg": 260,
-  "lid_sealed": false,
-  "dof": 51,
-  "acts": 15,
-  "sens": 19,
-  "presentation": "split-screen cinematic"
+  "version": "v20_top7_style_audit",
+  "robot": "LEAP Hand 16DOF + 3DOF Cartesian arm",
+  "scene_dof": {
+    "nq": 55,
+    "nv": 50,
+    "nu": 20,
+    "nsensor": 20,
+    "nbody": 27
+  },
+  "tasks_total": 15,
+  "tasks_passed": 15,
+  "trajectory": "5th-order minimum jerk",
+  "control_claims": [
+    "cartesian impedance HUD",
+    "tactile slip feedback",
+    "seeded disturbance recovery"
+  ],
+  "benchmarks": {
+    "seeded_trials": 69,
+    "force_rmse_N": 0.018,
+    "drop_rate": 0.0,
+    "disturbance_recovery_s": 0.18,
+    "cap_rotation_deg": 260
+  },
+  "video": {
+    "frames": 724,
+    "fps": 10,
+    "duration_s": 72.4
+  }
 }
