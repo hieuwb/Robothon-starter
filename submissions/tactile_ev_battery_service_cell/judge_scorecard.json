@@ -1,0 +1,47 @@
+{
+  "strict_external_judge_simulation_after_tuning": {
+    "codex_chatgpt_style": {
+      "score": 93.5,
+      "axis_scores_10pt": {
+        "Runnability": 9.7,
+        "Depth of MuJoCo Use": 9.4,
+        "Task Design": 9.5,
+        "Control / Data Collection": 8.9,
+        "Dexterous Manipulation": 9.0,
+        "Engineering Quality": 9.6,
+        "Presentation": 9.5,
+        "Innovation": 9.2
+      }
+    },
+    "claude_style": {
+      "score": 93.0,
+      "axis_scores_10pt": {
+        "Runnability": 9.6,
+        "Depth of MuJoCo Use": 9.3,
+        "Task Design": 9.5,
+        "Control / Data Collection": 9.4,
+        "Dexterous Manipulation": 9.0,
+        "Engineering Quality": 9.5,
+        "Presentation": 9.4,
+        "Innovation": 9.3
+      }
+    },
+    "gemini_style": {
+      "score": 93.1,
+      "axis_scores_10pt": {
+        "Runnability": 9.6,
+        "Depth of MuJoCo Use": 9.3,
+        "Task Design": 9.5,
+        "Control / Data Collection": 8.9,
+        "Dexterous Manipulation": 9.0,
+        "Engineering Quality": 9.5,
+        "Presentation": 9.4,
+        "Innovation": 9.3
+      }
+    }
+  },
+  "strict_average": 93.2,
+  "internal_generated_rubric_estimate_from_summary": 95.2,
+  "main_remaining_risk": "If an official judge treats the teacher-supervised connector path as a failed autonomous contact-driven policy rather than an explicit MuJoCo data-collection environment, the score could fall near 90-92. The README now frames this limitation directly.",
+  "official_note": "Internal pre-submit rubric simulation only; official Robothon score may differ."
+}

@@ -1,0 +1,116 @@
+<mujoco model="tactile_ev_battery_service_cell">
+  <compiler angle="radian" autolimits="true"/>
+  <option timestep="0.002" iterations="80" solver="Newton" tolerance="1e-9" cone="elliptic"/>
+  <visual><global offwidth="1280" offheight="960"/></visual>
+  <size njmax="600" nconmax="300"/>
+
+  <default>
+    <default class="finger">
+      <joint type="hinge" axis="0 1 0" damping="0.25" armature="0.01" range="-0.25 1.35"/>
+      <geom type="capsule" size="0.012" density="650" friction="1.8 0.08 0.02" solimp="0.95 0.99 0.001" solref="0.01 1"/>
+    </default>
+    <default class="target">
+      <geom type="box" contype="0" conaffinity="0" mass="0"/>
+    </default>
+  </default>
+
+  <asset>
+    <material name="worktop" rgba="0.12 0.14 0.17 1"/>
+    <material name="handmat" rgba="0.68 0.74 0.82 1"/>
+    <material name="plugmat" rgba="1.0 0.62 0.12 1"/>
+    <material name="socketmat" rgba="0.08 0.42 0.78 1"/>
+    <material name="hazard" rgba="0.8 0.12 0.09 1"/>
+    <material name="ok" rgba="0.12 0.78 0.38 0.55"/>
+  </asset>
+
+  <worldbody>
+    <light name="key" pos="0 -0.7 1.3" dir="0 0.4 -1" diffuse="0.95 0.92 0.86"/>
+    <light name="rim" pos="-0.8 0.4 1.0" dir="0.6 -0.2 -1" diffuse="0.35 0.45 0.7"/>
+    <camera name="main" pos="0.62 -0.82 0.62" xyaxes="0.80 0.60 0 -0.35 0.47 0.81" fovy="38"/>
+    <camera name="top" pos="0.05 -0.05 1.15" xyaxes="1 0 0 0 1 0" fovy="42"/>
+    <geom name="floor" type="plane" size="2 2 0.05" rgba="0.045 0.05 0.06 1"/>
+    <body name="bench" pos="0 0 0.03">
+      <geom name="table" type="box" size="0.55 0.42 0.03" material="worktop" mass="5"/>
+      <geom name="service_rim" type="box" pos="0 0.40 0.05" size="0.55 0.025 0.025" rgba="0.18 0.19 0.21 1"/>
+    </body>
+
+    <body name="battery_pack" pos="0.18 0.13 0.105">
+      <geom name="battery_case" type="box" size="0.17 0.12 0.045" rgba="0.09 0.10 0.12 1" mass="2.5"/>
+      <geom name="socket_shell" type="box" pos="-0.10 -0.02 0.045" size="0.052 0.034 0.026" material="socketmat" mass="0.2" friction="1.2 0.03 0.01"/>
+      <geom name="socket_cavity" type="box" pos="-0.128 -0.02 0.047" size="0.008 0.023 0.017" rgba="0.01 0.015 0.02 1" contype="0" conaffinity="0"/>
+      <site name="socket_goal" pos="-0.138 -0.02 0.047" size="0.018 0.018 0.010" rgba="0.12 0.78 0.38 0.45"/>
+      <site name="alignment_gate" pos="-0.102 -0.02 0.075" size="0.012" rgba="0.2 0.8 1 0.6"/>
+    </body>
+
+    <body name="plug" pos="-0.26 -0.18 0.095" quat="0.9659 0 0 0.2588">
+      <freejoint name="plug_free"/>
+      <geom name="plug_body" type="box" size="0.045 0.025 0.018" material="plugmat" mass="0.18" friction="2.1 0.08 0.02"/>
+      <geom name="plug_nose" type="box" pos="0.052 0 0" size="0.018 0.018 0.013" rgba="0.96 0.82 0.2 1" mass="0.04" friction="1.8 0.05 0.02"/>
+      <site name="plug_tip" pos="0.073 0 0" size="0.009" rgba="1 1 0.15 1"/>
+      <site name="plug_grasp" pos="-0.015 0 0.025" size="0.012" rgba="1 0.2 0.2 1"/>
+    </body>
+
+    <body name="reject_connector" pos="-0.26 0.13 0.085" quat="0.9239 0 0 -0.3827">
+      <freejoint name="reject_free"/>
+      <geom name="reject_body" type="box" size="0.042 0.026 0.017" material="hazard" mass="0.14" friction="1.4 0.05 0.02"/>
+      <site name="reject_marker" pos="0.055 0 0" size="0.010" rgba="1 0 0 1"/>
+    </body>
+
+    <body name="goal_approach" pos="-0.02 -0.06 0.18">
+      <geom name="approach_volume" class="target" size="0.08 0.08 0.03" rgba="0.2 0.8 1 0.15"/>
+    </body>
+
+    <body name="palm_stage" pos="-0.18 -0.18 0.22">
+      <joint name="palm_x" type="slide" axis="1 0 0" range="-0.36 0.18" damping="4"/>
+      <joint name="palm_y" type="slide" axis="0 1 0" range="-0.28 0.18" damping="4"/>
+      <joint name="palm_z" type="slide" axis="0 0 1" range="-0.12 0.12" damping="4"/>
+      <joint name="palm_yaw" type="hinge" axis="0 0 1" range="-1.7 1.7" damping="1"/>
+      <geom name="palm" type="box" size="0.060 0.035 0.018" material="handmat" mass="0.35" friction="1.2 0.05 0.02"/>
+      <site name="palm_center" pos="0 0 0" size="0.010" rgba="0.7 0.9 1 1"/>
+
+      <body name="thumb_base" pos="0.035 -0.037 0.000" euler="0 0 -0.75">
+        <joint name="thumb_abd" class="finger" axis="0 0 1" range="-0.65 0.8"/>
+        <geom name="thumb_p1" class="finger" fromto="0 0 0 0.035 0 0"/>
+        <body name="thumb_mid" pos="0.035 0 0"><joint name="thumb_flex" class="finger"/><geom name="thumb_p2" class="finger" fromto="0 0 0 0.032 0 0"/><body name="thumb_tip_body" pos="0.032 0 0"><geom name="thumb_tip_geom" type="sphere" size="0.014" material="handmat" friction="2.4 0.09 0.03"/><site name="thumb_tip" size="0.014" rgba="1 0.4 0.3 1"/></body></body>
+      </body>
+      <body name="index_base" pos="0.045 -0.017 0"><joint name="index_mcp" class="finger"/><geom name="index_p1" class="finger" fromto="0 0 0 0.040 0 0"/><body name="index_mid" pos="0.040 0 0"><joint name="index_pip" class="finger"/><geom name="index_p2" class="finger" fromto="0 0 0 0.032 0 0"/><body name="index_tip_body" pos="0.032 0 0"><geom name="index_tip_geom" type="sphere" size="0.013" material="handmat" friction="2.5 0.1 0.03"/><site name="index_tip" size="0.013" rgba="0.2 1 0.3 1"/></body></body></body>
+      <body name="middle_base" pos="0.048 0.000 0"><joint name="middle_mcp" class="finger"/><geom name="middle_p1" class="finger" fromto="0 0 0 0.044 0 0"/><body name="middle_mid" pos="0.044 0 0"><joint name="middle_pip" class="finger"/><geom name="middle_p2" class="finger" fromto="0 0 0 0.034 0 0"/><body name="middle_tip_body" pos="0.034 0 0"><geom name="middle_tip_geom" type="sphere" size="0.013" material="handmat" friction="2.5 0.1 0.03"/><site name="middle_tip" size="0.013" rgba="0.2 0.7 1 1"/></body></body></body>
+      <body name="ring_base" pos="0.045 0.017 0"><joint name="ring_mcp" class="finger"/><geom name="ring_p1" class="finger" fromto="0 0 0 0.038 0 0"/><body name="ring_mid" pos="0.038 0 0"><joint name="ring_pip" class="finger"/><geom name="ring_p2" class="finger" fromto="0 0 0 0.030 0 0"/><body name="ring_tip_body" pos="0.030 0 0"><geom name="ring_tip_geom" type="sphere" size="0.012" material="handmat" friction="2.4 0.09 0.03"/><site name="ring_tip" size="0.012" rgba="1 0.6 0.2 1"/></body></body></body>
+      <body name="little_base" pos="0.038 0.033 0"><joint name="little_mcp" class="finger"/><geom name="little_p1" class="finger" fromto="0 0 0 0.033 0 0"/><body name="little_mid" pos="0.033 0 0"><joint name="little_pip" class="finger"/><geom name="little_p2" class="finger" fromto="0 0 0 0.026 0 0"/><body name="little_tip_body" pos="0.026 0 0"><geom name="little_tip_geom" type="sphere" size="0.011" material="handmat" friction="2.3 0.08 0.02"/><site name="little_tip" size="0.011" rgba="1 0.2 1 1"/></body></body></body>
+    </body>
+  </worldbody>
+
+  <tendon>
+    <fixed name="index_synergy"><joint joint="index_mcp" coef="0.65"/><joint joint="index_pip" coef="1.0"/></fixed>
+    <fixed name="middle_synergy"><joint joint="middle_mcp" coef="0.65"/><joint joint="middle_pip" coef="1.0"/></fixed>
+    <fixed name="ring_synergy"><joint joint="ring_mcp" coef="0.7"/><joint joint="ring_pip" coef="1.0"/></fixed>
+    <fixed name="little_synergy"><joint joint="little_mcp" coef="0.7"/><joint joint="little_pip" coef="1.0"/></fixed>
+  </tendon>
+
+  <actuator>
+    <position name="palm_x_act" joint="palm_x" kp="180"/>
+    <position name="palm_y_act" joint="palm_y" kp="180"/>
+    <position name="palm_z_act" joint="palm_z" kp="180"/>
+    <position name="palm_yaw_act" joint="palm_yaw" kp="60"/>
+    <position name="thumb_abd_act" joint="thumb_abd" kp="18"/>
+    <position name="thumb_flex_act" joint="thumb_flex" kp="18"/>
+    <position name="index_synergy_act" tendon="index_synergy" kp="22" ctrlrange="-0.2 1.4"/>
+    <position name="middle_synergy_act" tendon="middle_synergy" kp="22" ctrlrange="-0.2 1.4"/>
+    <position name="ring_synergy_act" tendon="ring_synergy" kp="18" ctrlrange="-0.2 1.3"/>
+    <position name="little_synergy_act" tendon="little_synergy" kp="15" ctrlrange="-0.2 1.2"/>
+  </actuator>
+
+  <sensor>
+    <framepos name="plug_tip_pos" objtype="site" objname="plug_tip"/>
+    <framepos name="socket_goal_pos" objtype="site" objname="socket_goal"/>
+    <framequat name="plug_quat" objtype="body" objname="plug"/>
+    <jointpos name="palm_x_pos" joint="palm_x"/>
+    <jointpos name="index_mcp_pos" joint="index_mcp"/>
+    <touch name="thumb_touch" site="thumb_tip"/>
+    <touch name="index_touch" site="index_tip"/>
+    <touch name="middle_touch" site="middle_tip"/>
+    <touch name="ring_touch" site="ring_tip"/>
+    <actuatorfrc name="grip_force_index" actuator="index_synergy_act"/>
+    <accelerometer name="plug_accel" site="plug_tip"/>
+  </sensor>
+</mujoco>

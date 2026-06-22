@@ -1,0 +1,28 @@
+{
+  "entrypoints": [
+    "python3 run.py",
+    "python3 submissions/tactile_ev_battery_service_cell/run_demo.py"
+  ],
+  "verification": [
+    "python3 -m pytest submissions/tactile_ev_battery_service_cell/test_submission.py -q",
+    "python3 submissions/tactile_ev_battery_service_cell/run_demo.py --duration 8 --fps 30 --width 960 --height 720 --trials 5"
+  ],
+  "rubric_axes": [
+    "Runnability",
+    "Depth of MuJoCo Use",
+    "Task Design",
+    "Control/Data Collection",
+    "Dexterous Manipulation",
+    "Engineering Quality",
+    "Presentation",
+    "Innovation"
+  ],
+  "deliverables": [
+    "scene.xml",
+    "run_demo.py",
+    "README.md",
+    "outputs/tactile_ev_battery_service_cell.mp4",
+    "outputs/summary.json",
+    "registration.json"
+  ]
+}

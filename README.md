@@ -1,3 +1,9 @@
+# Tactile EV Battery Service Cell
+
+Primary submission is in `submissions/tactile_ev_battery_service_cell/`.
+
+Run: `python3 run.py`
+
 <div align="center">
 
 # 🤖 Robothon 2026

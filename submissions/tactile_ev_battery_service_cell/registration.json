@@ -1,0 +1,13 @@
+{
+  "uuid": "24851ab8-7f99-4ff2-bc7c-9d280383c417",
+  "participant_name": "hieuwb",
+  "project_name": "Tactile EV Battery Service Cell",
+  "github": "hieuwb",
+  "tools_used": [
+    "Hermes Agent",
+    "OpenAI Codex",
+    "Claude-style rubric review",
+    "Gemini-style rubric review"
+  ],
+  "anonymous": false
+}
